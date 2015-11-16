@@ -325,6 +325,11 @@ a.boxclose{
 .share-artical ul li a:hover{
 	color:#B9CB41;
 }
+/*---picture for articles---*/
+
+.pic_content {
+
+}
 /*---comment-box----*/
 .single-page {
 	margin-top: 8em;
@@ -1195,3 +1200,4 @@ span.mail a:hover{
 	}
 }
 /*--//End-media Quries for 320px-monitors-*/
+

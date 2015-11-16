@@ -1,9 +1,12 @@
-
+<?php
+		require('comment.php');
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
 		<title>Pinball Website Template | single-page :: w3layouts</title>
 		<link href="./css/style.css" rel='stylesheet' type='text/css' />
+		<link href="./css/reply.css" rel='stylesheet' type='text/css' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="./images/fav-icon.png" />
 		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
@@ -13,6 +16,7 @@
 		<!----//webfonts---->
 		<!---start-click-drop-down-menu----->
 		<script src="./js/jquery.min.js"></script>
+		<script src="./js/reply.js"></script>
         <!----start-dropdown--->
          <script type="text/javascript">
 			var $ = jQuery.noConflict();
@@ -34,7 +38,16 @@
 				});
 									
 			});
+			
+			
+			$(function(){
+  				$(".btn1").click(function(){
+   				$(".text").show();
+  				})
+			})
 		</script>
+		
+		
         <!----//End-dropdown--->
 	</head>
 	<body>
@@ -69,14 +82,25 @@
 					</div> 
 				</div>       	  
 				<div class="top-searchbar">
-					<form>
-						<input type="text" /><input type="submit" value="" />
+					<form action="searchPage.php" name="searchbar" method="post">
+						<input type="text" name="keyword"/> 
+						<input type="submit" name="submit" value="" />
 					</form>
 				</div>
 				<div class="userinfo">
 					<div class="user">
 						<ul>
-							<li><a href="#"><img src="./images/user-pic.png" title="user-name" /><span>Ipsum</span></a></li>
+							<li><a href="#">
+								<?php 
+								session_start();
+								if(!empty($_SESSION['username'])) {  ?>
+								<img src="<?php echo $_SESSION['user_pic_url'] ?>" title="user-name" />
+								<span><?php echo $_SESSION['username'] ?></span></a>
+								<?php } else { ?>
+								<img src="./images/user-pic.png" title="user-name" />
+								<span>visitor</span></a>
+								<?php } ?> 		
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -90,24 +114,23 @@
 			<div class="single-page">
 							<div class="single-page-artical">
 								<div class="artical-content">
-<?php
- include('connectToMysql.php');
-		header("Content-Type:text/html;charset=gb2312");
-		$articleId = htmlspecialchars($_GET['article_id']);
-		
-		$check_query = mysql_query("select pic_url,title,content,date from pic_relate as pr inner join article as a on a.article_id = pr.article_id inner join picture as p on p.pic_id = pr.pic_id where a.article_id='$articleId' limit 1");
-		if($query = mysql_fetch_array($check_query)){
-			$pic_url=$query["pic_url"];
-			$articleTitle=$query["title"];
-			$articleContent=$query["content"];
-			$articleDate=$query["date"];
-			
-		}
-?>
+								<?php
+								 	require('detail.php');					
+								?>
+								
+									<h1 style="text-align:center;><a href="#" ><?php echo $articleTitle ?></a></h1></br>
 									<img src= "<?php echo $pic_url ?>" title="banner1"> 
-	
-									<h3 style="text-align:center;><a href="#" ><?php echo $articleTitle ?></a></h3></br>
-									<div><?php echo $articleContent ?></div>
+									<div>
+									<?php echo $articleContent ?>
+									</div>
+									<?php  $count=1; ?>
+									<?php while ($row_pic = mysql_fetch_row($query1)) {   ?>
+										<div class='pic_content'>
+										<p><?php echo "STEP ".$count ;  ?></p>
+										<img src= "<?php echo $row_pic[0] ?>" height='1080px' width='600px'  > 
+										</div>
+									<?php $count++; } ?>
+									
 									<span style="float:right;"><?php echo $articleDate?></span></br>
 								    </div>
 								    <div class="artical-links">
@@ -127,75 +150,58 @@
 		  						 </div>
 		  						 <div class="clear"> </div>
 							</div>
-							<!---start-comments-section--->
-							<div class="comment-section">
+							
+							
+		<!--start-comments-section-->
+		
+			<div class="comment-section">
 				<div class="grids_of_2">
 					<h2>Comments</h2>
+		<?php 
+			while ($rowOfComment = mysql_fetch_array($resultOfComment)) { ?> 
 					<div class="grid1_of_2">
 						<div class="grid_img">
-							<a href=""><img src="./images/pic10.jpg" alt=""></a>
+							<a href=""><img src="<?php echo $rowOfComment[3] ?>" alt=""></a>
 						</div>
 						<div class="grid_text">
-							<h4 class="style1 list"><a href="#">Uku Mason</a></h4>
-							<h3 class="style">march 2, 2013 - 12.50 AM</h3>
-							<p class="para top"> All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.</p>
-							<a href="" class="btn1">Click to Reply</a>
+							<h4 class="style1 list"><a href="#"><?php echo $rowOfComment[2] ?></a></h4>
+							<p class="para top"><?php echo $rowOfComment[0] ?></p>
+							<h3 class="style" ><?php echo 'Date: '.$rowOfComment[1] ?></h3>
+							<div class="login-put">
+	             				<form id="form1" name="form1" method="post" action="">
+	                				<p>
+	                    				<input type="button" id="btn1 "name="RadioGroup1" value="Reply" onClick="show()"/><br/>
+	                				</p>
+	                				<div id="div1" style="display:none"><input class="text01" name="" type="text" /></div>
+	             				</form>
+							</div>
 						</div>
 						<div class="clear"></div>
 					</div>
-					<div class="grid1_of_2 left">
-						<div class="grid_img">
-							<a href=""><img src="./images/pic10.jpg" alt=""></a>
-						</div>
-						<div class="grid_text">
-							<h4 class="style1 list"><a href="#">Designer First</a></h4>
-							<h3 class="style">march 3, 2013 - 4.00 PM</h3>
-							<p class="para top"> All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.</p>
-							<a href="" class="btn1">Click to Reply</a>
-						</div>
-						<div class="clear"></div>
-					</div>
-					<div class="grid1_of_2">
-						<div class="grid_img">
-							<a href=""><img src="./images/pic12.jpg" alt=""></a>
-						</div>
-						<div class="grid_text">
-							<h4 class="style1 list"><a href="#">Ro Kanth</a></h4>
-							<h3 class="style">march 2, 2013 - 12.50 AM</h3>
-							<p class="para top"> All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.</p>
-							<a href="" class="btn1">Click to Reply</a>
-						</div>
-						<div class="clear"></div>
+		 <?php } ?>	
+					
 					</div>								
 						<div class="artical-commentbox">
 						 	<h2>Leave a Comment</h2>
 				  			<div class="table-form">
-								<form action="#" method="post" name="post_comment">
+								<form action="reply.php?article_id=<?php echo $articleId ?>" method="post" name="post_comment">
 									<div>
-										<label>Name<span>*</span></label>
-										<input type="text" value=" ">
+										<label>Your Comment</label>
+										<textarea type="text" name="comment" > </textarea><br/>	
+										<input type="submit" name="submit" value="submit"   >
 									</div>
-									<div>
-										<label>Email<span>*</span></label>
-										<input type="text" value=" ">
-									</div>
-									<div>
-										<label>Your Comment<span>*</span></label>
-										<textarea> </textarea>	
-									</div>
-								</form>
-								<input type="submit" value="submit">
-									
+											
+								</form>		
 							</div>
 							<div class="clear"> </div>
 				  		</div>			
 					</div>
-			</div>
-							<!---//End-comments-section--->
+				</div>
+							<!---//End-comments-section-->
 						</div>
 						 </div>
 		</div>
-		<!----start-footer--->
+		<!---start-footer-->
 		<div class="footer">
 			
 		</div>

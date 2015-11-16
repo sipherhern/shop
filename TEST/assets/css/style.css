@@ -180,8 +180,8 @@ button:active {
     -ms-transition: all .2s;
 }
 
-.connect a.facebook { background: url(../img/facebook.png) center center no-repeat; }
-.connect a.twitter { background: url(../img/twitter.png) center center no-repeat; }
+.connect a.facebook { background: url(../images/facebook.png) center center no-repeat; }
+.connect a.twitter { background: url(../images/twitter.png) center center no-repeat; }
 
 .connect a:hover { background-position: center bottom; }
 
@@ -189,6 +189,4 @@ button:active {
 form,input,button{font-family:Microsoft YaHei,Segoe UI,Tahoma,Arial,Verdana,sans-serif; text-decoration:none; width:100%;}
 button.submit_button{ font-size:24px; letter-spacing:15px;}
 input.Captcha{ width:130px; float:left;}
-
-
 

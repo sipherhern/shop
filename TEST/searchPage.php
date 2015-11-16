@@ -1,5 +1,5 @@
 <?php
-	include('initializeHome.php');
+	require('search.php');
 ?>
 
 
@@ -77,7 +77,7 @@
 					</div> 
 				</div>       	  
 				<div class="top-searchbar">
-					<form action="searchPage.php" name="searchbar" method="post">
+					<form action="search.php" name="searchbar" method="post">
 						<input type="text" name="keyword"/> 
 						<input type="submit" name="submit" value="" />
 					</form>
@@ -86,16 +86,15 @@
 					<div class="user">
 						<ul>
 							<li><a href="#">
-								<?php 
+							<?php 
 								session_start();
-								if(isset($_SESSION['username'])) {  ?>
-								<img src="<?php  echo $_SESSION['user_pic_url'] ?>" title="user-name" />
+								if(!empty($_SESSION['username'])) {  ?>
+								<img src="<?php echo $_SESSION['user_pic_url'] ?>" title="user-name" />
 								<span><?php echo $_SESSION['username'] ?></span></a>
 								<?php } else { ?>
 								<img src="./images/user-pic.png" title="user-name" />
 								<span>visitor</span></a>
 								<?php } ?> 
-								
 							</li>
 						</ul>
 					</div>
@@ -109,21 +108,21 @@
 		<div class="content">
 			<div class="wrap">
 			 <div id="main" role="main">
-			    
+			    <h1> Result: </h1>
 			      <ul id="tiles">
 			        <!-- These are our grid blocks -->
 			      
 			       <?php 
-			        while ($row = mysql_fetch_array($result)) { ?> 
+			        while ($rowOfSearch = mysql_fetch_array($searchResult)) { ?> 
 			        	<li>
-			        	<a href='detailPage.php?article_id=<?php echo $row[2] ?>'>
-			          <!-- <li onclick="location.href='detailPage.php?article_id=<?php echo $row[2] ?>";">  -->
-			        	<img src= <?php echo $row[0] ?> width="200" height="200">
+			        	<a href='detailPage.php?article_id=<?php echo $rowOfSearch[2] ?>'>
+			          <!-- <li onclick="location.href='detailPage.php?article_id=<?php echo $rowOfSearch[2] ?>";">  -->
+			        	<img src= <?php echo $rowOfSearch[0] ?> width="200" height="200">
 			         	<div class="post-info">
 			       	<div class="post-basic-info">
-				  		<h3><a href="#"><?php echo $row[1]  ?></a></h3>
+				  		<h3><a href="#"><?php echo $rowOfSearch[1]  ?></a></h3>
 				        	
-				     		<p><?php echo $row[2] ?></p>
+				     		<p><?php echo $rowOfSearch[2] ?></p>
 			       		</div>
 			         		<div class="post-info-rate-share">
 			        		<div class="rateit">
