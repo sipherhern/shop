@@ -35,15 +35,17 @@
             <form action="" name="loginFrame" method="post">
                 <input type="text" name="username" class="username" placeholder="请输入您的用户名！">
                 <input type="password" name="password" class="password" placeholder="请输入您的用户密码！">     
-                <button type="submit" name="submit" class="submit_button" >GO</button>
+                <button type="submit" name="submit" class="submit_button" >登录</button>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <a  href = "user/register.php" ><input type="button" value="注册" class="submit_button"></a>
+                
+               
+                
+                
+               
                 <div class="error"><span>+</span></div>
             </form>
-            <div class="connect">
-                <p>第三方登录</p>
-                <p>
-                    <a class="facebook" href=""></a>
-                    <a class="twitter" href=""></a>
-                </p>
+   
             </div>
         </div>
     </body>
@@ -61,14 +63,16 @@
 		if(isset($_POST['submit'])){
 			$username = htmlspecialchars($_POST['username']);
 			$password = MD5($_POST['password']);
-	
+			
+		
 		//数据库查询
-			$check_query = mysql_query("select u.user_id,pic_url from user as u inner join pic_relate as pr on u.user_id=pr.user_id inner join picture as p on p.pic_id=pr.pic_id where username='$username' and password='$password' limit 1");
+			$check_query = mysql_query("select u.user_id,pic_url,u.comment from user as u inner join pic_relate as pr on u.user_id=pr.user_id inner join picture as p on p.pic_id=pr.pic_id where username='$username' and password='$password' limit 1");
 			if($result = mysql_fetch_array($check_query)){
 				session_start();
 	   			$_SESSION['username'] = $username;
 	    		$_SESSION['user_id'] = $result['user_id'];
 	    		$_SESSION['user_pic_url']=$result['pic_url'];
+	    		$_SESSION['comment']=$result['comment'];
 	    		header("location:homePage.php");
 	    		exit;
 			} else {

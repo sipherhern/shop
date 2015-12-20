@@ -1,5 +1,8 @@
 <?php
 	include('initializeHome.php');
+	include_once ('admin_global.php');
+	session_start();
+	if($_GET[action]=='logout')  $db->Get_user_out();
 ?>
 
 
@@ -8,9 +11,13 @@
 	<head>
 		<title>Learn It And Do It</title>
 		<link href="./css/style.css" rel='stylesheet' type='text/css' />
+		<meta http-equiv="Content鎼滅�?Type" content="text/html; charset=GBK">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="./images/fav-icon.png" />
 		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		
+		<!-- javascript-->
+		<script src="js/pages.js" ></script>
 		
 		<!----webfonts---->
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -38,12 +45,10 @@
 				$(".trigger").click(function(){
 					$(this).toggleClass("active").next().slideToggle("slow");
 						return false; //Prevent the browser jump to the link anchor
-				});
-									
+				});					
 			});
 		</script>
-        <!----//End-dropdown--->
-		<!---//End-click-drop-down-menu----->
+        <!----//End-dropdown--->	
 	</head>
 	<body>
 		<!---start-wrap---->
@@ -82,22 +87,32 @@
 						<input type="submit" name="submit" value="" />
 					</form>
 				</div>
+
+
 				<div class="userinfo">
-					<div class="user">
-						<ul>
-							<li><a href="#">
-								<?php 
-								session_start();
-								if(isset($_SESSION['username'])) {  ?>
-								<img src="<?php  echo $_SESSION['user_pic_url'] ?>" title="user-name" />
-								<span><?php echo $_SESSION['username'] ?></span></a>
-								<?php } else { ?>
-								<img src="./images/user-pic.png" title="user-name" />
-								<span>visitor</span></a>
-								<?php } ?> 
-								
-							</li>
-						</ul>
+					<div >
+					<ul id="navigation"> 
+					<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+    				<?php 			
+						if(isset($_SESSION['user_id'])) {
+						$id=$_SESSION['user_id'];	
+					?>
+        			<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"><a href="user/userSpace.php?id=<?php echo $id?>">
+					<img style="vertical-align: middle;"  src="<?php  echo $_SESSION['user_pic_url'] ?>" title="user-name" />
+					<span><?php echo $_SESSION['username'] ?></span></a>
+                    <?php } else { ?>
+						<img src="./images/user-pic.png" title="user-name" />
+						<span>visitor</span></a>
+					<?php } ?> 	
+			</a>
+            <ul>
+               <li><a href="user/userSpace.php?id=<?php echo $id?>" id="my_level" rel="nofollow">Modify user info</a></li>
+			   <li><a onClick="return confirm('Are You sure to log out?')"              
+                href="homePage.php?action=logout"  rel="nofollow">    Log   Out    </a></li>
+            </ul>
+        </li>
+    </ul>
+
 					</div>
 				</div>
 				<div class="clear"> </div>

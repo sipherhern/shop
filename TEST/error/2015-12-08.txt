@@ -1,0 +1,30 @@
+错误SQL语句：
+SELECT * FROM `p_newsclass` where f_id=0 order by id DESC
+客户IP:::1
+时间 :2015-12-08 13:48:36
+
+错误SQL语句：
+SELECT * FROM p_config
+客户IP:::1
+时间 :2015-12-08 13:48:36
+
+错误SQL语句：
+SELECT * FROM `p_newsbase` order by id DESC limit 5
+客户IP:::1
+时间 :2015-12-08 13:48:36
+
+错误SQL语句：
+SELECT * FROM `p_newsclass` where f_id=0 order by id DESC
+客户IP:::1
+时间 :2015-12-08 14:26:46
+
+错误SQL语句：
+SELECT * FROM p_config
+客户IP:::1
+时间 :2015-12-08 14:26:46
+
+错误SQL语句：
+SELECT * FROM `p_newsbase` order by id DESC limit 5
+客户IP:::1
+时间 :2015-12-08 14:26:46
+

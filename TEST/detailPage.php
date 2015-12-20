@@ -1,18 +1,24 @@
 <?php
 		require('comment.php');
+		session_start();
 ?>
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Pinball Website Template | single-page :: w3layouts</title>
+		<title>Learn It And Do It</title>
 		<link href="./css/style.css" rel='stylesheet' type='text/css' />
 		<link href="./css/reply.css" rel='stylesheet' type='text/css' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/x-icon" href="./images/fav-icon.png" />
 		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 		</script>
+		<script src="./js/share.js"></script>
+
+		
 		<!----webfonts---->
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+		
 		<!----//webfonts---->
 		<!---start-click-drop-down-menu----->
 		<script src="./js/jquery.min.js"></script>
@@ -90,16 +96,14 @@
 				<div class="userinfo">
 					<div class="user">
 						<ul>
-							<li><a href="#">
-								<?php 
-								session_start();
+							<li><a href="#"><?php 								
 								if(!empty($_SESSION['username'])) {  ?>
 								<img src="<?php echo $_SESSION['user_pic_url'] ?>" title="user-name" />
 								<span><?php echo $_SESSION['username'] ?></span></a>
 								<?php } else { ?>
 								<img src="./images/user-pic.png" title="user-name" />
 								<span>visitor</span></a>
-								<?php } ?> 		
+							<?php } ?> 		
 							</li>
 						</ul>
 					</div>
@@ -131,21 +135,60 @@
 										</div>
 									<?php $count++; } ?>
 									
-									<span style="float:right;"><?php echo $articleDate?></span></br>
+									<span style="float:right;"><?php echo "Date : ". $articleDate?></span></br></br></br>
 								    </div>
 								    <div class="artical-links">
 		  						 	<ul>
 		  						 		<li><a href="#"><img src="./images/blog-icon2.png" title="Admin"><span>admin</span></a></li>
 		  						 		<li><a href="#"><img src="./images/blog-icon3.png" title="Comments"><span>No comments</span></a></li>
-		  						 		<li><a href="#"><img src="./images/blog-icon4.png" title="Lables"><span>View posts</span></a></li>
+		  						 		<li><a href="#"><img src="./images/blog-icon4.png" title="Lables"><span>Share</span></a></li>
 		  						 	</ul>
 		  						 </div>
-		  						 <div class="share-artical">
-		  						 	<ul>
-		  						 		<li><a href="#"><img src="./images/facebooks.png" title="facebook">Facebook</a></li>
-		  						 		<li><a href="#"><img src="./images/twiter.png" title="Twitter">Twiiter</a></li>
-		  						 		<li><a href="#"><img src="./images/google+.png" title="google+">Google+</a></li>
-		  						 		<li><a href="#"><img src="./images/rss.png" title="rss">Rss</a></li>
+		  					<div class="share-artical">
+		  						 	<ul>			
+		 						    <div>
+		 						   
+									  <div class="m-box">
+									      <a href="http://open.weibo.com/wiki/ShareCode" target="_blank"></a>
+									      <div class="icn"><a href="#" class="wb1" onclick="shareToSinaWB(event)"></a></div>
+									  </div>
+									  
+									  <div class="m-box">
+									      <a href="http://connect.qq.com/intro/share/" target="_blank"></a>
+									      <div class="icn"><a href="#" class="wb2" onclick="shareToQzone(event)"></a></div>
+									  </div>
+									  
+									  <div class="m-box">
+										  <a href="http://share.baidu.com/code/advance" target="_blank"></a>
+									      <div class="icn"><a href="#" class="wb3" onclick="shareToTieba(event)"></a></div>
+									  </div>
+									  
+									  <div class="m-box">
+									      <div class="icn"><a href="#" class="wb4" onclick="shareToDouban(event)"></a></div>
+									  </div>
+									  
+									  <div class="m-box">
+									       <a href="http://dev.t.qq.com/websites/share/" target="_blank"></a>
+									       <div class="icn"><a href="#" class="wb5"  onclick="shareToQQwb(event)"></a></div>
+									  </div>
+									  
+									  <div class="m-box">
+									       <a href="http://dev.renren.com/website/?widget=rrshare&content=use" target="_blank"></a>
+									       <div class="icn"><a href="#" class="wb6" onclick="shareToRenren(event)"></a></div>
+									  </div>
+									  
+									   <div class="m-box">
+									      <a href="http://open.kaixin001.com/document.php?type=records#code" target="_blank"></a>
+									      <div class="icn"><a href="#" class="wb7" onclick="shareToKaixin(event)"></a></div>
+									 </div>
+									   
+									  <div class="m-box">
+									     <div class="icn"><a href="#" class="wb8" onclick="shareToFacebook(event)"></a></div>
+									   </div>
+									 
+									  <div class="m-box">
+									       <div class="icn"><a href="#" class="wb9" onclick="shareToTwitter(event)"></a></div>
+									  </div>
 		  						 	</ul>
 		  						 </div>
 		  						 <div class="clear"> </div>
