@@ -124,9 +124,15 @@ function doCheck(){
 	   		}
 		else 
 		{
-			 $passwd = MD5($pwd);
+			 $passwd = MD5($password);
 			 $sql = "insert into user(username,password,email,phone,comment) values ('$username','$passwd','$email','$phone','$comment')";
 			 mysql_query($sql);
+			 $sql1 = "select user_id from user where username = '$username'";
+			 $result = mysql_query($sql1);
+			 $query = mysql_fetch_array($result);
+			 $userId = $query[0];
+			 $sql2 = "insert into pic_relate(pic_id,user_id) values ('11','$userId')";
+			 mysql_query($sql2);
 			 echo "right/<br>";
 			 echo"<Script>window.alert('Register Successfully, Please login in!');location.href='../login.php'</Script>"; 
 		}	
