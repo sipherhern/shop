@@ -1,5 +1,5 @@
 ﻿<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
-
+<%@ taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -18,26 +18,28 @@
 	});  
 	
 	
-	function Checklogin()
-	{
-	var name = document.loginForm.admin.adminName;
-	var password= document.loginForm.admin.password;
-	if (name.value=="")
-	{
-		alert("Please enter your name");
-		document.loginForm.admin.adminName.focus();
-		return false;
-	}
-		if (password.value=="")
-	{
-		alert("Please enter your password");
-		document.loginForm.admin.password.focus();
-		return false;
-	}
-	return true;
+	function login() {
+    // console.info("点击了登录");
+    var userName = $("#aName").val();
+    // console.info(userName)
+    var userPass = $("#aPass").val();
+    // console.info(userPass);
+    if (userName == "" || userName == null) {
+        alert("用户名不能为空");
+        return false;
+    } else if (userPass == "" || userPass == null) {
+        alert("密码不能为空");
+        return false;
+    } else {
+        return true;
+    }
 }
 	
 	</script> 
+	
+	
+	
+
 </head>
 
 <body style="background-color:#1c77ac; background-image:url(images/light.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
@@ -58,14 +60,15 @@
     <div class="loginbody">
     <span class="systemlogo"></span>    
     <div class="loginbox">
-    
+   
     <form name="loginForm" action="Login.action" method="post">
     <ul>
-    <li><input name="admin.adminName" type="text" class="loginuser" value="用户名" onclick=""/></li>
-    <li><input name="admin.password" type="text" class="loginpwd" value="密码" onclick=""/></li>
-    <li><input name="" type="submit" class="loginbtn" value="登录"  onclick="Checklogin();"  />
+    <li><input id="aName" name="admin.adminName" type="text" class="loginuser" value="用户名" onclick=""/></li>
+    <li><input id="aPass" name="admin.password" type="password" class="loginpwd" value="" onclick=""/></li>
+    <li><input name="" type="submit" class="loginbtn" value="登录"  onclick="login();"  />
     <label><input name="" type="checkbox" value="" checked="checked" />记住密码</label>
     <label><a href="#">忘记密码？</a></label></li>
+     <s:actionerror/>
     </ul>
     </form>
     </div>

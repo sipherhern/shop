@@ -27,12 +27,11 @@ public class Login extends ActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Admin admin;
+	Log log = LogFactory.getLog(Login.class);
 	
 	@Autowired
 	private adminService adminService;
 	
-	
-	Log log = LogFactory.getLog(Login.class);
 
 	public Admin getAdmin() {
 		return admin;
@@ -43,16 +42,13 @@ public class Login extends ActionSupport {
 	}
 	
 	public String login() throws Exception{
-		System.out.println(admin.getPassword()+"   "+admin.getAdminName());
 		Map session = ActionContext.getContext().getSession();
-        String ver2 = (String)session.get("rand");
-        
     	//采用md5+salt算法，salt算子为user字符串。
     	String password = MD5.MD5Encode(admin.getPassword(),admin.getAdminName());  
     	System.out.println(password);
-        int userId = adminService.loginValidation(admin.getAdminName() , admin.getPassword());
+        int userId = adminService.loginValidation(admin.getAdminName(),password);
         if (userId > 0) {
-            session.put("admin" , admin.getAdminName());
+            session.put("admin",admin.getAdminName());
             log.info(admin.getAdminName()+"登录成功");
             return "success";
         }

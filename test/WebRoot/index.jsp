@@ -25,7 +25,7 @@
     
     <div class="welinfo">
     <span><img src="images/sun.png" alt="天气" /></span>
-    <b>早上好,欢迎登陆广东顺德长和电气有限公司</b>
+    <b> ${sessionScope.admin} 早上好,欢迎登陆广东顺德长和电气有限公司</b>
     <a href="#">帐号设置</a>
     </div>
     
@@ -39,7 +39,7 @@
     <ul class="iconlist">
     
     <li><img src="images/ico01.png" /><p><a href="#">管理设置</a></p></li>
-    <li><img src="images/ico02.png" /><p><a href="#">发布新商品</a></p></li>
+    <li><img src="images/ico02.png" /><p><a href="#">发布新文章</a></p></li>
     <li><img src="images/ico03.png" /><p><a href="#">数据统计</a></p></li>
     <li><img src="images/ico04.png" /><p><a href="#">文件上传</a></p></li>
     <li><img src="images/ico05.png" /><p><a href="#">目录管理</a></p></li>
@@ -58,13 +58,12 @@
     </div>
     
     <ul class="infolist">
-    <li><span>您可以快速发布产品</span><a class="ibtn">发布或管理产品</a></li>
     <li><span>您可以进行密码修改、账户设置等操作</span><a class="ibtn">账户管理</a></li>
     </ul>
     
     <div class="xline"></div>
     
-    <div class="uimakerinfo"><b>查看广东顺德长和电气有限公司网站使用指南</b>(<a href="http://www.uimaker.com" target="_blank">www.XXXXXX.com</a>)</div>
+    <div class="uimakerinfo"><b>查看广东顺德长和电气有限公司网站使用指南</b>(<a href="http://www.baidu.com" target="_blank">www.shunhe.com</a>)</div>
     
     <ul class="umlist">
     <li><a href="#">如何发布文章</a></li>

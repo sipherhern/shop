@@ -22,11 +22,9 @@
 				<value>classpath:/com/shunhe/entity/hbm/*.hbm.xml</value>
 			</list>
 		</property>
-		<property name="packagesToScan">
-			<list>
-				<value>com/shunhe/entity</value> <!-- 扫描实体类，也就是平时所说的model -->
-			</list>
-	   </property>
+		<!-- 扫描实体类，也就是平时所说的model -->
+		<property name="packagesToScan" value="com/shunhe/entity" />
+				
 	</bean>
  
 	 <!-- 开启AOP监听 只对当前配置文件有效 -->

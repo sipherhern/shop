@@ -1,9 +1,11 @@
 package com.shunhe.entity;
 
+import org.hibernate.annotations.Entity;
+
 /**
  * Admin entity. @author MyEclipse Persistence Tools
  */
-
+@Entity
 public class Admin implements java.io.Serializable {
 
 	// Fields

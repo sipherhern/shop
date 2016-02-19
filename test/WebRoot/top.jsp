@@ -1,14 +1,14 @@
-ï»¿<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="gb2312" isELIgnored="false" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>æ— æ ‡é¢˜æ–‡æ¡£</title>
+<title>ÎŞ±êÌâÎÄµµ</title>
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 <script language="JavaScript" src="js/jquery.js"></script>
 <script type="text/javascript">
 $(function(){	
-	//é¡¶éƒ¨å¯¼èˆªåˆ‡æ¢
+	//¶¥²¿µ¼º½ÇĞ»»
 	$(".nav li a").click(function(){
 		$(".nav li a.selected").removeClass("selected")
 		$(this).addClass("selected");
@@ -22,29 +22,29 @@ $(function(){
 <body style="background:url(images/topbg.gif) repeat-x;">
 
     <div class="topleft">
-    <a href="main.jsp" target="_parent"><img src="images/logo.png" title="ç³»ç»Ÿé¦–é¡µ" /></a>
+    <a href="main.jsp" target="_parent"><img src="images/logo.png" title="ÏµÍ³Ê×Ò³" /></a>
     </div>
         
     <ul class="nav">
-    <li><a href="default.jsp" target="rightFrame" class="selected"><img src="images/icon01.png" title="å·¥ä½œå°" /><h2>å·¥ä½œå°</h2></a></li>
-    <li><a href="imgtable.jsp" target="rightFrame"><img src="images/icon02.png" title="æ¨¡å‹ç®¡ç†" /><h2>æ¨¡å‹ç®¡ç†</h2></a></li>
-    <li><a href="imglist.jsp"  target="rightFrame"><img src="images/icon03.png" title="æ¨¡å—è®¾è®¡" /><h2>æ¨¡å—è®¾è®¡</h2></a></li>
-    <li><a href="tools.jsp"  target="rightFrame"><img src="images/icon04.png" title="å¸¸ç”¨å·¥å…·" /><h2>å¸¸ç”¨å·¥å…·</h2></a></li>
-    <li><a href="computer.jsp" target="rightFrame"><img src="images/icon05.png" title="æ–‡ä»¶ç®¡ç†" /><h2>æ–‡ä»¶ç®¡ç†</h2></a></li>
-    <li><a href="tab.jsp"  target="rightFrame"><img src="images/icon06.png" title="ç³»ç»Ÿè®¾ç½®" /><h2>ç³»ç»Ÿè®¾ç½®</h2></a></li>
+    <li><a href="default.jsp" target="rightFrame" class="selected"><img src="images/icon01.png" title="¹¤×÷Ì¨" /><h2>¹¤×÷Ì¨</h2></a></li>
+    <li><a href="imgtable.jsp" target="rightFrame"><img src="images/icon02.png" title="Ä£ĞÍ¹ÜÀí" /><h2>Ä£ĞÍ¹ÜÀí</h2></a></li>
+    <li><a href="imglist.jsp"  target="rightFrame"><img src="images/icon03.png" title="Ä£¿éÉè¼Æ" /><h2>Ä£¿éÉè¼Æ</h2></a></li>
+    <li><a href="tools.jsp"  target="rightFrame"><img src="images/icon04.png" title="³£ÓÃ¹¤¾ß" /><h2>³£ÓÃ¹¤¾ß</h2></a></li>
+    <li><a href="computer.jsp" target="rightFrame"><img src="images/icon05.png" title="ÎÄ¼ş¹ÜÀí" /><h2>ÎÄ¼ş¹ÜÀí</h2></a></li>
+    <li><a href="tab.jsp"  target="rightFrame"><img src="images/icon06.png" title="ÏµÍ³ÉèÖÃ" /><h2>ÏµÍ³ÉèÖÃ</h2></a></li>
     </ul>
             
     <div class="topright">    
     <ul>
-    <li><span><img src="images/help.png" title="å¸®åŠ©"  class="helpimg"/></span><a href="#">å¸®åŠ©</a></li>
-    <li><a href="#">å…³äº</a></li>
-    <li><a href="login.jsp" target="_parent">é€€å‡º</a></li>
+    <li><span><img src="images/help.png" title="°ïÖú"  class="helpimg"/></span><a href="#">°ïÖú</a></li>
+    <li><a href="#">¹ØÓÚ</a></li>
+    <li><a href="login.jsp" target="_parent">ÍË³ö</a></li>
     </ul>
      
     <div class="user">
-    <span>admin</span>
-    <i>æ¶ˆæ¯</i>
-    <b>5</b>
+    <span>${sessionScope.admin}</span>
+    <i>ÏûÏ¢</i>
+    <b>0</b>
     </div>    
     
     </div>

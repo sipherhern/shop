@@ -27,7 +27,7 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mysql-connector-java-5.1.22-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Users/140814/Downloads/spring-context-support-3.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="C:/Users/140814/Downloads/struts2-spring-plugin-2.2.1.1.jar"/>
+	<classpathentry kind="lib" path="F:/MyEclips10/Workspaces/test/WebRoot/WEB-INF/lib/spring-context-support-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="F:/MyEclips10/Workspaces/test/WebRoot/WEB-INF/lib/struts2-spring-plugin-2.2.1.1.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

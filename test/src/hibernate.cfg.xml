@@ -19,6 +19,8 @@
 		</property>
 		<property name="myeclipse.connection.profile">shunhe</property>
 		<!-- <mapping resource="com/shunhe/entity/hbm/Admin.hbm.xml" /> -->
+		<!-- <mapping resource="com/shunhe/Device.hbm.xml" /> -->
+		
 
 	</session-factory>
 

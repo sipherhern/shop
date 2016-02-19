@@ -22,9 +22,8 @@ public class adminServiceImpl implements adminService {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			throw new Exception("ÑéÖ¤ÓÃ»§µÇÂ¼Òì³£");
+			throw new Exception("ç”¨æˆ·å/å¯†ç ä¸åŒ¹é…");
 		}
 		return -1;
 	}
-
 }

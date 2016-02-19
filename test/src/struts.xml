@@ -7,9 +7,13 @@
         </action> 
         
         <action name="Login"  class="com.shunhe.action.Login" method ="login">
-            <result name="success">/test.jsp</result>
+            <result name="success">/main.jsp</result>
             <result name="input">/login.jsp</result>
         </action> 
+        
+        <action name="RecordQuery"  class="com.shunhe.action.QueryAll" method ="recordQuery">
+            <result name="success">/recordQuery.jsp</result>
+        </action>
 	
    </package>
 

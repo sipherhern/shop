@@ -44,7 +44,7 @@ $(function(){
         <li><cite></cite><a href="timeRegulator.jsp" target="rightFrame">时段稳压</a><i></i></li>
         <li><cite></cite><a href="groupControlSetting.jsp" target="rightFrame">组控设置</a><i></i></li>
         <li><cite></cite><a href="maps.jsp" target="rightFrame">百度地图 </a><i></i></li>
-        <li><cite></cite><a href="imgtable.jsp" target="rightFrame">记录查询</a><i></i></li>
+        <li><cite></cite><a href="recordQuery.jsp" target="rightFrame">记录查询</a><i></i></li>
         <li><cite></cite><a href="imgtable.jsp" target="rightFrame">当前警报</a><i></i></li>
         <li><cite></cite><a href="imgtable.jsp" target="rightFrame">电缆防盗信息  </a><i></i></li>
         </ul>    
@@ -62,7 +62,7 @@ $(function(){
         <li><cite></cite><a href="#">单灯开关灯时间</a><i></i></li>
         <li><cite></cite><a href="#">信息统计</a><i></i></li>
         <li><cite></cite><a href="#">历史记录</a><i></i></li>
-        <li><cite></cite><a href="#">单灯警报信息</a><i></i></li>
+        <li><cite></cite><a href="warnningInfo.jsp" target="rightFrame">单灯警报信息</a><i></i></li>
         </ul>     
     </dd> 
    
