@@ -1,0 +1,14 @@
+package com.shop.service;
+
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
+import com.shop.entity.Customer;
+
+public interface OrderService {
+	public JSONObject createDirectly(int prodId,int prodAmount,int addressId,Customer customer,
+			int skuId);
+	public List<?> createByCartitem(int shop_id);
+	public boolean ConfirmOrder(JSONObject json);
+}

@@ -1,0 +1,107 @@
+package com.shop.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.shop.entity.Collect;
+import com.shop.entity.Customer;
+
+@Service
+public interface CollectService {
+
+	/**
+	 * 添加店铺至收藏夹
+	 * 
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+
+	public int followShop(Collect collection) throws Exception;
+
+	/**
+	 * 添加商品至收藏夹
+	 * 
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+
+	public int followProduct(Collect collection) throws Exception;
+
+	/**
+	 * 从收藏中删除单个店铺
+	 * 
+	 * @param shop_id
+	 * @param cust_id
+	 * @return
+	 * @throws Exception
+	 */
+	public int unfollowShop(int shop_id, int cust_id) throws Exception;
+
+	/**
+	 * 从收藏中删除单个商品
+	 * 
+	 * @param prod_id
+	 * @param cust_id
+	 * @return
+	 * @throws Exception
+	 */
+
+	public int unfollowProduct(int prod_id, int cust_id) throws Exception;
+
+	/**
+	 * 获得商品收藏分页查询结果
+	 * 
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+
+	@SuppressWarnings("rawtypes")
+	public List getProdCollectPage(int cust_id) throws Exception;
+
+	/**
+	 * 获得店铺收藏分页查询结果
+	 * 
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+
+	@SuppressWarnings("rawtypes")
+	public List getShopCollectPage(int cust_id) throws Exception;
+
+	/**
+	 * 统计收藏店铺的数量
+	 * 
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+
+	public int getShopFollNum(Customer customer) throws Exception;
+
+	/**
+	 * 统计收藏商品的数量
+	 * 
+	 * @param customer
+	 * @return
+	 * @throws Exception
+	 */
+
+	public int getProdFollNum(Customer customer) throws Exception;
+
+	/**
+	 * 统计关注某商品的人数
+	 * 
+	 * @param prod_id
+	 * @return
+	 * @throws Exception
+	 */
+
+	public Map<String, Object> judgmentDate(Date start, Date end) throws Exception;
+}

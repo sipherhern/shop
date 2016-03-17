@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-6 13:17:48 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Collect" table="collect" catalog="shop">
+        <id name="collectId" type="java.lang.Integer">
+            <column name="collect_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="shop" class="com.shop.entity.Shop" fetch="select">
+            <column name="shop_id">
+                <comment>&#181;&#234;&#198;&#204;ID</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="product" class="com.shop.entity.Product" fetch="select">
+            <column name="prod_id">
+                <comment>&#201;&#204;&#198;&#183;ID</comment>
+            </column>
+        </many-to-one>
+        <property name="custId" type="int">
+            <column name="cust_id" not-null="true" />
+        </property>
+        <property name="collectDate" type="timestamp">
+            <column name="collect_date" length="19" not-null="true" />
+        </property>
+        <property name="collectType" type="string">
+            <column name="collect_type" length="8" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

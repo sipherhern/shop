@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 14:30:31 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Category" table="category" catalog="shop">
+        <id name="kindId" type="java.lang.Integer">
+            <column name="kind_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="category" class="com.shop.entity.Category" fetch="select">
+            <column name="parent_id">
+                <comment>&#184;&#184;&#183;&#214;&#192;&#224;</comment>
+            </column>
+        </many-to-one>
+        <property name="kindLevel" type="int">
+            <column name="kind_level" not-null="true">
+                <comment>&#183;&#214;&#192;&#224;&#181;&#200;&#188;&#182;</comment>
+            </column>
+        </property>
+        <property name="kindName" type="string">
+            <column name="kind_name" length="100" not-null="true">
+                <comment>&#183;&#214;&#192;&#224;&#195;&#251;</comment>
+            </column>
+        </property>
+        <set name="skuProdsForSku2Id2" table="sku_prod" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sku2_id2">
+                    <comment>&#181;&#218;&#182;&#254;&#184;&#246;sku2</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.SkuProd" />
+        </set>
+        <set name="categories" table="category" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="parent_id">
+                    <comment>&#184;&#184;&#183;&#214;&#192;&#224;</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Category" />
+        </set>
+        <set name="skuProdsForSku2Id1" table="sku_prod" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sku2_id1">
+                    <comment>&#181;&#218;&#210;&#187;&#184;&#246;sku2</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.SkuProd" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 16:35:45 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Shop" table="shop" catalog="shop">
+        <id name="shopId" type="java.lang.Integer">
+            <column name="shop_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="customer" class="com.shop.entity.Customer" fetch="select">
+            <column name="cust_id" not-null="true" unique="true">
+                <comment>&#181;&#234;&#214;&#247;</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="firstClass" class="com.shop.entity.FirstClass" fetch="select">
+            <column name="fist_class_id" />
+        </many-to-one>
+        <property name="shopUuid" type="string">
+            <column name="shop_uuid" length="32" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;UUID</comment>
+            </column>
+        </property>
+        <property name="shopInfo" type="string">
+            <column name="shop_info" length="500" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#188;&#242;&#189;&#233;</comment>
+            </column>
+        </property>
+        <property name="shopAddr" type="string">
+            <column name="shop_addr" length="100" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#181;&#216;&#214;&#183;</comment>
+            </column>
+        </property>
+        <property name="shopTele" type="int">
+            <column name="shop_tele" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#181;&#231;&#187;&#176;</comment>
+            </column>
+        </property>
+        <property name="shopName" type="string">
+            <column name="shop_name" length="100" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#195;&#251;</comment>
+            </column>
+        </property>
+        <property name="shopFollowers" type="int">
+            <column name="shop_followers" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#185;&#216;&#215;&#162;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="shopDate" type="timestamp">
+            <column name="shop_date" length="19" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#180;&#180;&#189;&#168;&#200;&#213;&#198;&#218;</comment>
+            </column>
+        </property>
+        <property name="shopEnabled" type="boolean">
+            <column name="shop_enabled" not-null="true">
+                <comment>&#181;&#234;&#198;&#204;&#202;&#199;&#183;&#241;&#213;&#253;&#212;&#218;&#211;&#170;&#210;&#181;</comment>
+            </column>
+        </property>
+        <property name="shopProductNum" type="int">
+            <column name="shop_product_num" not-null="true" />
+        </property>
+        <property name="shopLastprom" type="timestamp">
+            <column name="shop_lastprom" length="19" />
+        </property>
+        <property name="shopLastprod" type="timestamp">
+            <column name="shop_lastprod" length="19" />
+        </property>
+        <set name="collects" table="collect" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="shop_id">
+                    <comment>&#181;&#234;&#198;&#204;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Collect" />
+        </set>
+        <set name="pictureRelates" table="picture_relate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="shop_id" />
+            </key>
+            <one-to-many class="com.shop.entity.PictureRelate" />
+        </set>
+        <set name="products" table="product" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="shop_id" not-null="true">
+                    <comment>&#201;&#204;&#198;&#183;&#203;&#249;&#202;&#244;&#181;&#234;&#198;&#204;</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Product" />
+        </set>
+    </class>
+</hibernate-mapping>

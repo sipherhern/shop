@@ -1,0 +1,264 @@
+package com.shop.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Collect;
+import com.shop.entity.Customer;
+import com.shop.entity.Shop;
+import com.shop.service.ShopService;
+
+@SuppressWarnings({ "unchecked", "rawtypes" })
+@Component
+public class ShopServiceImpl extends BaseServiceImpl implements ShopService {
+
+	@Override
+	public Shop SysLoginShop(Customer customer) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("custId", customer.getCustId());
+		List<?> resultSet = this.find(
+				"From Shop s inner join s.customer c on c.custId = :custId",
+				param);
+
+		if (resultSet.isEmpty() == false) {
+			Object[] obj = (Object[]) resultSet.get(0);
+			Shop resShop = (Shop) obj[0];
+			return resShop;
+
+		}
+		return null;
+	}
+
+	@Override
+	public void SysLogout() {
+		// TODO Auto-generated method stub
+		this.getCurrentSession().clear();
+		this.getCurrentSession().close();
+	}
+
+	@Override
+	public void SysUpdateShop(Shop shop) {
+		this.update(shop);
+	}
+
+	@Override
+	public void SysSetShopeEnabled(Shop shop) {
+		this.update(shop);
+	}
+
+	@Override
+	public List<Map<String, Object>> UserlistPopularShop() {
+		// 按照关注量查询前十
+		List<Map<String, Object>> result = this
+				.find("SQM:select s.shop_id as shopId,"
+						+ "s.shop_name as shopName,p.pic_url as picUrl "
+						+ "from shop as s left join "
+						+ "picture_relate as pr inner join pictures as p on p.pic_id = pr.pic_id "
+						+ "on s.shop_id = pr.shop_id where s.shop_enabled = 1 "
+						+ "order by s.shop_followers desc", 1, 10, null);
+		return result;
+
+	}
+
+
+	@Override
+	public List<Map<String, Object>> searchCertainShop(String keywords)
+			throws Exception {
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("keywords", "%" + keywords + "%");
+		List<Map<String, Object>> shopResult = this
+				.find("Select new Map (s.shopId as shopId,s.shopUuid as shopUuid, s.shopName as shopName,s.shopProductNum as shopProductNum,s.shopFollowers as shopFollowers,p.picUrl) From Shop s inner join s.pictureRelates pr inner join pr.pictures p where s.shopName like :keywords and s.shopEnabled = 1 and p.picType = 'shopLogo'",
+						m);
+		System.out.println(shopResult);
+		for (int i = 0; i < shopResult.size(); i++) {
+			Map map = (Map) shopResult.get(i);
+			// 先添加map的长度,让下面的iterator的size不会发生变化,从而不会出现ConcurrentModificationException这个错误
+			map.put("isNewProd", 0);
+			map.put("isNewProm", 0);
+			Iterator iterator = map.keySet().iterator();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
+				Object object = map.get(key);
+				if (key.equals("shopId")) {
+					int shop_id = (int) object;
+					Shop shop = (Shop) this.get(Shop.class, shop_id);
+					map.replace("isNewProd",
+							judgmentDate(shop.getShopLastprod()));
+					map.replace("isNewProm",
+							judgmentDate(shop.getShopLastprom()));
+				}
+			}
+		}
+		return shopResult;
+	}
+
+	@Override
+	public int getFollowed(int shop_id, int cust_id) {
+		Map<String, Object> sh = new HashMap<String, Object>();
+		sh.put("shopId", shop_id);
+		sh.put("custId", cust_id);
+		if (this.find(
+				"from Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId",
+				sh).isEmpty())
+			return 202;
+		else
+			return 200;
+	}
+
+	@Override
+	public int followCertainShop(int shop_id, int cust_id) {
+		// TODO Auto-generated method stub
+		Session session = this.openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			if (this.getFollowed(shop_id, cust_id) == 200) {
+				return 202;
+			}
+			Shop shop = (Shop) session.load(Shop.class, shop_id);
+			shop.setShopFollowers(shop.getShopFollowers() + 1);
+			Collect collect = new Collect();
+			collect.setCustId(cust_id);
+			collect.setCollectType("shop");
+			collect.setCollectDate(new Date());
+			collect.setShop(shop);
+			session.save(collect);
+			tx.commit();
+		}
+
+		catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+			return 500;
+		} finally {
+			session.clear();
+			session.close();
+		}
+		return 200;
+
+	}
+
+	@Override
+	public int cancelFollowCertainShop(int shop_id, int cust_id) {
+		// TODO Auto-generated method stub
+		Map<String, Object> sh = new HashMap<String, Object>();
+		sh.put("shopId", shop_id);
+		sh.put("custId", cust_id);
+		Session session = this.openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			Shop shop = (Shop) session.load(Shop.class, shop_id);
+			shop.setShopFollowers(shop.getShopFollowers() - 1);
+			Collect collect = new Collect();
+			List list = this
+					.find("From Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId",
+							sh);
+			if (list.size() == 0) {
+				return 202;
+			}
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				collect = (Collect) obj[0];
+				this.delete(collect);
+			}
+			tx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (tx != null)
+				tx.rollback();
+			return 500;
+		} finally {
+			session.clear();
+			session.close();
+		}
+		return 200;
+		// 1 getCurrentSession创建的session会和绑定到当前线程,而openSession不会。
+		// 2 getCurrentSession创建的线程会在事务回滚或事物提交后自动关闭,而openSession必须手动关闭
+	}
+
+	@Override
+	public Shop getShopInfo(int shop_id) {
+		// TODO Auto-generated method stub
+		Shop shop = (Shop) this.get(Shop.class, shop_id);
+		return shop;
+	}
+
+	@Override
+	public List<Map<String, Object>> getShopPic(int shop_id) {
+		// TODO Auto-generated method stub
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("shop_id", shop_id);
+		List<Map<String, Object>> result = this
+				.find("SQM:select p.pic_url as picUrl,p.pic_type as picType "
+						+ "from pictures as p inner join picture_relate as pr on p.pic_id = pr.pic_id "
+						+ "inner join shop as s on pr.shop_id = s.shop_id "
+						+ "where s.shop_id = :shop_id and p.pic_type = 'shopLogo' "
+						+ "or p.pic_type = 'shopBackground'", params);
+		// from Collect c inner join c.shop s where s.shopId = :shopId and
+		// c.custId = :custId
+		return result;
+	}
+
+	/*
+	 * public JSONObject getShopTag(int shop_id){ JSONObject json = new
+	 * JSONObject(); Date date = new Date(); Shop shop = (Shop)
+	 * this.get(Shop.class,shop_id); if(shop==null) return null;
+	 * if(shop.getShopLastprod().after(date)==true) json.put("promotion", true);
+	 * else json.put("promotion", false);
+	 * if(shop.getShopLastprod().after(date)==true) json.put("newproduct",
+	 * true); else json.put("newproduct", false); return json; }
+	 */
+
+	@Override
+	public int getShopNewProdNum(int shop_id) {
+		int count = 0;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("shopId", shop_id);
+		try {
+			String hql = "HQM:select p.prodDate as prodDate from Product p where p.shop.shopId = :shopId";
+			List list = this.find(hql, params);
+			if (list.isEmpty()) {
+				return 0;
+			} else {
+				for (int i = 0; i < list.size(); i++) {
+					Map map = (Map) list.get(i);
+					Iterator iterator = map.keySet().iterator();
+					while (iterator.hasNext()) {
+						String key = (String) iterator.next();
+						Object object = map.get(key);
+						System.out.println(object);
+						if (this.judgmentDate((Date) object)) {
+							count++;
+						}
+					}
+				}
+			}
+			return count;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public boolean judgmentDate(Date end) throws Exception {
+		Date date = new Date();
+		long dif = date.getTime() - end.getTime();
+		if (dif < 0) {
+			return false;
+		}
+		double result = dif * 1.0 / (1000 * 60 * 60);
+		if (result <= 168) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+}

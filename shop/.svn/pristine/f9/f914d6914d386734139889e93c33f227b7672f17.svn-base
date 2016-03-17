@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-17 23:39:21 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.SkuProd" table="sku_prod" catalog="shop">
+        <id name="skuprodId" type="java.lang.Integer">
+            <column name="skuprod_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="categoryBySku2Id1" class="com.shop.entity.Category" fetch="select">
+            <column name="sku2_id1">
+                <comment>&#181;&#218;&#210;&#187;&#184;&#246;sku2</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="categoryBySku2Id2" class="com.shop.entity.Category" fetch="select">
+            <column name="sku2_id2">
+                <comment>&#181;&#218;&#182;&#254;&#184;&#246;sku2</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="product" class="com.shop.entity.Product" fetch="select">
+            <column name="prod_id" not-null="true" />
+        </many-to-one>
+        <property name="prodStore" type="java.lang.Integer">
+            <column name="prod_store" />
+        </property>
+        <property name="prodPrice" type="big_decimal">
+            <column name="prod_price" precision="7" />
+        </property>
+        <set name="cartitems" table="cartitem" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="skuprod_id" not-null="true" />
+            </key>
+            <one-to-many class="com.shop.entity.Cartitem" />
+        </set>
+        <set name="orderRelates" table="order_relate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="skuprod_id" not-null="true">
+                    <comment>&#201;&#204;&#198;&#183;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.OrderRelate" />
+        </set>
+    </class>
+</hibernate-mapping>

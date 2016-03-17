@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-6 13:17:48 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Pictures" table="pictures" catalog="shop">
+        <id name="picId" type="java.lang.Integer">
+            <column name="pic_id" />
+            <generator class="identity" />
+        </id>
+        <property name="picUuid" type="string">
+            <column name="pic_uuid" length="32" not-null="true" />
+        </property>
+        <property name="picName" type="string">
+            <column name="pic_name" length="100" not-null="true">
+                <comment>&#205;&#188;&#198;&#172;&#195;&#251;</comment>
+            </column>
+        </property>
+        <property name="picUrl" type="string">
+            <column name="pic_url" length="100" not-null="true">
+                <comment>&#205;&#188;&#198;&#172;&#194;&#183;&#190;&#182;</comment>
+            </column>
+        </property>
+        <property name="picType" type="string">
+            <column name="pic_type" length="11" not-null="true">
+                <comment>1&#161;&#162;&#185;&#227;&#184;&#230; 2&#161;&#162;&#181;&#234;&#198;&#204; 3&#161;&#162;&#201;&#204;&#198;&#183;</comment>
+            </column>
+        </property>
+        <one-to-one name="pictureRelate" class="com.shop.entity.PictureRelate"></one-to-one>
+    </class>
+</hibernate-mapping>

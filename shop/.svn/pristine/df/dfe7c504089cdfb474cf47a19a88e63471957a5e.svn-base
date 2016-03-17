@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-6 13:17:48 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Customer" table="customer" catalog="shop">
+        <id name="custId" type="java.lang.Integer">
+            <column name="cust_id" />
+            <generator class="identity" />
+        </id>
+        <property name="custUuid" type="string">
+            <column name="cust_uuid" length="32" not-null="true">
+                <comment>&#211;&#195;&#187;&#167;UUID</comment>
+            </column>
+        </property>
+        <property name="custUname" type="string">
+            <column name="cust_uname" length="30" not-null="true">
+                <comment>&#211;&#195;&#187;&#167;&#195;&#251;</comment>
+            </column>
+        </property>
+        <property name="custPwd" type="string">
+            <column name="cust_pwd" length="16" not-null="true">
+                <comment>&#211;&#195;&#187;&#167;&#195;&#220;&#194;&#235;</comment>
+            </column>
+        </property>
+        <set name="orders" table="order" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="customer_id" not-null="true" />
+            </key>
+            <one-to-many class="com.shop.entity.Order" />
+        </set>
+        <set name="prodCommts" table="prod_commt" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="cust_id" not-null="true">
+                    <comment>&#211;&#195;&#187;&#167;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.ProdCommt" />
+        </set>
+        <set name="cartitems" table="cartitem" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="cust_id" not-null="true" />
+            </key>
+            <one-to-many class="com.shop.entity.Cartitem" />
+        </set>
+        <set name="shops" table="shop" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="cust_id" not-null="true" unique="true">
+                    <comment>&#181;&#234;&#214;&#247;</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Shop" />
+        </set>
+    </class>
+</hibernate-mapping>

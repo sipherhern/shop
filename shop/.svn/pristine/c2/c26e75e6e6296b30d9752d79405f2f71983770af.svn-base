@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 16:35:45 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Shipping" table="shipping" catalog="shop">
+        <id name="shipId" type="java.lang.Integer">
+            <column name="ship_id" />
+            <generator class="identity" />
+        </id>
+        <property name="shipName" type="string">
+            <column name="ship_name" not-null="true" />
+        </property>
+        <property name="shipUuid" type="string">
+            <column name="ship_uuid" length="32" not-null="true" />
+        </property>
+        <property name="shipRegion" type="string">
+            <column name="ship_region" length="106" not-null="true">
+                <comment>&#197;&#228;&#203;&#205;&#181;&#216;&#199;&#248;</comment>
+            </column>
+        </property>
+        <property name="shipFirstunit" type="big_decimal">
+            <column name="ship_firstunit" precision="7" not-null="true">
+                <comment>&#202;&#215;&#214;&#216;&#214;&#216;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="shipFirstprice" type="big_decimal">
+            <column name="ship_firstprice" precision="7" not-null="true">
+                <comment>&#202;&#215;&#214;&#216;&#183;&#209;&#211;&#195;</comment>
+            </column>
+        </property>
+        <property name="shipContinueunit" type="big_decimal">
+            <column name="ship_continueunit" precision="7" not-null="true">
+                <comment>&#208;&#248;&#214;&#216;&#181;&#165;&#206;&#187;</comment>
+            </column>
+        </property>
+        <property name="shipContiuneprice" type="big_decimal">
+            <column name="ship_contiuneprice" precision="7" not-null="true">
+                <comment>&#208;&#248;&#214;&#216;&#181;&#165;&#188;&#219;</comment>
+            </column>
+        </property>
+        <property name="shipType" type="string">
+            <column name="ship_type" length="3" />
+        </property>
+        <property name="shipDetail" type="string">
+            <column name="ship_detail" length="500">
+                <comment>&#197;&#228;&#203;&#205;&#203;&#181;&#195;&#247;</comment>
+            </column>
+        </property>
+        <property name="shipStatus" type="boolean">
+            <column name="ship_status" not-null="true">
+                <comment>&#202;&#199;&#183;&#241;&#178;&#201;&#211;&#195;&#184;&#195;&#196;&#163;&#176;&#229;</comment>
+            </column>
+        </property>
+        <property name="shipDate" type="timestamp">
+            <column name="ship_date" length="19" not-null="true">
+                <comment>&#196;&#163;&#176;&#229;&#200;&#213;&#198;&#218;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

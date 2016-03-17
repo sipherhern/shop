@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 16:35:45 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.PictureRelate" table="picture_relate" catalog="shop">
+        <id name="picId" type="java.lang.Integer">
+            <column name="pic_id" />
+            <generator class="foreign">
+                <param name="property">pictures</param>
+            </generator>
+        </id>
+        <many-to-one name="news" class="com.shop.entity.News" fetch="select">
+            <column name="new_id" />
+        </many-to-one>
+        <one-to-one name="pictures" class="com.shop.entity.Pictures" constrained="true"></one-to-one>
+        <many-to-one name="prodRefund" class="com.shop.entity.ProdRefund" fetch="select">
+            <column name="return_id" />
+        </many-to-one>
+        <many-to-one name="shop" class="com.shop.entity.Shop" fetch="select">
+            <column name="shop_id" />
+        </many-to-one>
+        <many-to-one name="product" class="com.shop.entity.Product" fetch="select">
+            <column name="prod_id" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,107 @@
+package com.shop.controller.user;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.Pictures;
+import com.shop.entity.Product;
+import com.shop.entity.Promotion;
+import com.shop.service.PromotionService;
+
+@SuppressWarnings("rawtypes")
+@Controller
+@RequestMapping("/user/promotion")
+public class PromotionController extends RequestContext {
+
+	@Autowired
+	private PromotionService promotionService;
+
+	@ResponseBody
+	@RequestMapping(value = "getPromotionBypage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getPromotionBypage(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int shop_id = json.getInt("shopId");
+		json.remove("shopId");
+		JSONArray jsonArray = new JSONArray();
+		Promotion prom = new Promotion();
+		Product product = new Product();
+		List list = promotionService.getPromotionByPage(shop_id);
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			product = (Product) obj[0];
+			prom = (Promotion) obj[1];
+			// 获取时更新并查询促销的状态
+			promotionService.updateValidity(prom);
+			json.put("promDesc", prom.getPromDesc());
+			json.put("promEnabled", prom.isPromEnabled());
+			json.put("prodName", product.getProdName());
+			jsonArray.add(json);
+		}
+		return jsonArray;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getAllPromByPage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getAllPromByPage(HttpServletResponse res) throws Exception {
+		JSONObject json = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Promotion prom = new Promotion();
+		Product product = new Product();
+		Pictures picture = new Pictures();
+		List list = promotionService.getAllPromByPage();
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			product = (Product) obj[0];
+			prom = (Promotion) obj[1];
+			picture = (Pictures) obj[3];
+			// 获取时更新并查询促销的状态
+			promotionService.updateValidity(prom);
+			json.put("prodName", product.getProdName());
+			json.put("SaleVolume", product.getProdSell());
+			json.put("promPrice", prom.getPromPrice());
+			json.put("promDiscount", prom.getPromDiscount());
+			json.put("picUrl", picture.getPicUrl());
+			jsonArray.add(json);
+		}
+		return jsonArray;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getPromToHomepage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getPromToHomepage(HttpServletResponse res)
+			throws Exception {
+		JSONObject json = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Promotion prom = new Promotion();
+		Product product = new Product();
+		Pictures picture = new Pictures();
+		List list = promotionService.getPromToHomepage();
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			product = (Product) obj[0];
+			prom = (Promotion) obj[1];
+			picture = (Pictures) obj[3];
+			// 获取时更新并查询促销的状态
+			promotionService.updateValidity(prom);
+			json.put("prodName", product.getProdName());
+			json.put("promPrice", prom.getPromPrice());
+			json.put("promDiscount", prom.getPromDiscount());
+			json.put("picUrl", picture.getPicUrl());
+			jsonArray.add(json);
+		}
+		return jsonArray;
+	}
+
+}

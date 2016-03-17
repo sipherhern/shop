@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 16:35:45 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.OrderRelate" table="order_relate" catalog="shop">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="skuProd" class="com.shop.entity.SkuProd" fetch="select">
+            <column name="skuprod_id" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;ID</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="order" class="com.shop.entity.Order" fetch="select">
+            <column name="order_id" not-null="true" />
+        </many-to-one>
+        <property name="prodAmount" type="int">
+            <column name="prod_amount" not-null="true">
+                <comment>&#185;&#186;&#194;&#242;&#202;&#253;&#193;&#191;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

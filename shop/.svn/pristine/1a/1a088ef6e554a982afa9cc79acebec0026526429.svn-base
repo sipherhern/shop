@@ -1,0 +1,419 @@
+<%@ page language="java" import="java.util.*"
+	contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="layout.tld" prefix="e"%>
+
+<e:override name="title">股东汇 | 管理平台</e:override>
+
+
+<e:override name="content_right">
+
+
+	<ul class="breadcrumb">
+		<li><i class="icon-home"></i> <a href="index.html">Home</a> <i
+			class="icon-angle-right"></i></li>
+		<li><a href="#">Publish</a></li>
+	</ul>
+
+	<div class="row-fluid">
+		<div class="box span12">
+			<div class="box-content">
+
+				<ul class="nav nav-pills nav-justified">
+
+					<li class="#"><a href="#"><span>来自卖家的评价&nbsp;</span> <i
+							class="#">|</i></a></li>
+
+					<li><a href="#"><span>来自买家的评价&nbsp;</span><span
+							class="label label-important">1</span><i class="#">|</i></a></li>
+
+					<li><a href="#"><span>给他人的评价&nbsp;</span><em>0</em><i
+							class="#">|</i></a></li>
+				</ul>
+				<hr>
+				<div class="span12">
+					<div class="box-content">
+						<form>
+							<div class="form-group">
+								<select onchange="choseGoodOrBad(this.value);">
+									<option selected="selected" value="1">评价</option>
+									<option value="2">好评</option>
+									<option value="3">中评</option>
+									<option value="4">差评</option>
+								</select> <select onchange="showContent(this.value);">
+									<option selected="selected" value="">评论</option>
+									<option value="1">有评论内容</option>
+									<option value="0">无评论内容</option>
+								</select>
+							</div>
+						</form>
+						<div class="rate-list" id="rateList" data-spm="a1z0b.3.5920813">
+							<table
+								class="table table-striped table-bordered bootstrap-datatable datatable">
+								<colgroup>
+									<col class="rate">
+									<col class="content">
+									<col class="who">
+									<col class="what">
+									<col class="op">
+								</colgroup>
+								<thead>
+									<tr>
+										<th>类别</th>
+										<th>评论内容</th>
+										<th>评价人</th>
+										<th>宝贝信息</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="feedback-247415667001" data-id="247415667001">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">非常好的买家 ╭╮╭╮ 期待下次合作 ╭◆┴┴◆╮ ●￣(I)￣● │︵
+												︵│真诚的为你服务到最好！~ ●●●●●●●●╰○－－○╯本店新款不断上架 欢迎再次光临 1991.taobao.com
+											</p>
+											<p class="date">[2015-07-29 13:07:48]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=252211998"
+											target="_blank">xdonghai90</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvC8yvCHYOFk4&amp;trade_id=UvFH0MCkWvFcSMCx0Omg0vWTT"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_3.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//trade.taobao.com/trade/detail/trade_snap.htm?trade_id=1146901796648843"
+											title="夏装亚麻短袖T恤套装男韩版修身大码T恤衫男士棉麻V领休闲套装潮" target="_blank">夏装亚麻短袖T恤套装男韩版修身大码T恤衫男士棉麻V领...</a>
+											<p class="price">
+												<em>159.0</em>元
+											</p></td>
+										<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs" onclick="window.location.href='<c:url value="/merchant/deal/add_rate.jsp" />'">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-245748507046" data-id="245748507046">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">亲，感谢您对小店的支持！欢迎下次光临！</p>
+											<p class="date">[2015-07-04 15:46:28]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=688442528"
+											target="_blank">janezhou523</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UMCg4MmQyMFI4&amp;trade_id=UvFN4OFQuvFIGOFvLOmg0vWTT"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_blue_4.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//trade.taobao.com/trade/detail/trade_snap.htm?trade_id=1089471239368843"
+											title="迅雷白金会员0.01出租12h小时一人独享离线云播高速下载24h自动发" target="_blank">迅雷白金会员0.01出租12h小时一人独享离线云播高速...</a>
+											<p class="price">
+												<em>0.1</em>元
+											</p></td>
+											<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs" onclick="window.location.href='<c:url value="/merchant/deal/add_rate.jsp" />'">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-241736577959" data-id="241736577959">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">中评！</p>
+											<p class="date">[2015-05-16 11:39:16]</p>
+										</td>
+										<td>商家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=1776456424"
+											target="_blank">中国移动官方旗舰店</a> <img
+											style="padding-top: 4px; vertical-align: text-bottom;"
+											src="//assets.alicdn.com/sys/common/icon/trade/order_mall.png">
+
+										</td>
+										<td><a
+											href="//buy.taobao.com/auction/buy_now.jhtml?item_id_num=38043249922"
+											title="广东移动 手机 话费充值 30元 快充直充 24小时自动充即时到账" target="_blank">广东移动
+												手机 话费充值 30元 快充直充 24小时自动充...</a>
+											<p class="price">
+												<em>29.7</em>元
+											</p></td>
+										<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-240520105672" data-id="240520105672">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">好评！</p>
+											<p class="date">[2015-04-29 15:21:24]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=1986845811"
+											target="_blank">liuenshuo0608</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvFk4MCg0MFgYvQTT&amp;trade_id=UvFNYMF8GMmHuMF8WOmg0vWTT"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_5.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//buy.taobao.com/auction/buy_now.jhtml?item_id_num=40863009259"
+											title="xunlei迅雷会员VIP账号出租 高速离线云播 一人一号 12h小时非6h"
+											target="_blank">xunlei迅雷会员VIP账号出租 高速离线云播 一人一号 ...</a>
+											<p class="price">
+												<em>0.1</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">已回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-239891493125" data-id="239891493125">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">
+												<span class="bracket">[<a href="//mall.taobao.com"
+													target="_blank">来自天猫</a>]
+												</span> 好评！
+											</p>
+											<p class="date">[2015-04-23 19:56:13]</p>
+										</td>
+										<td>商家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=1579481027"
+											target="_blank">karivita卡瑞特兹旗舰店</a> <img
+											style="padding-top: 4px; vertical-align: text-bottom;"
+											src="//assets.alicdn.com/sys/common/icon/trade/order_mall.png">
+
+										</td>
+										<td><a
+											href="//item.taobao.com/auction/item_detail.htm?item_num_id=22397571957"
+											title="新西兰进口全脂奶粉 高蛋白无糖 成人儿童学生青少年900g" target="_blank">新西兰进口全脂奶粉
+												高蛋白无糖 成人儿童学生青少年...</a>
+											<p class="price">
+												<em>198.0</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-239941390034" data-id="239941390034">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">
+												感谢您对小店的支持，收到货后有什么问题请及时联系我，如果对我们的宝贝满意，请给5分支持哦！</p>
+											<p class="date">[2015-04-23 19:55:49]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=1752198440"
+											target="_blank">特价包邮书城</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvFcbvCHSOmQ0vNTT&amp;trade_id=UvFNyMFHGMGv4MFHyOmg0vWTT"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_1.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=1025137385128843"
+											title="多省包邮 Java核心技术 卷I 基础知识 +卷2高级特性 + Effective"
+											target="_blank">多省包邮 Java核心技术 卷I 基础知识 +卷2高级特性...</a>
+											<p class="price">
+												<em>45.0</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-238736557115" data-id="238736557115">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">评价方未及时做出评价,系统默认好评!</p>
+											<p class="date">[2015-04-08 09:40:18]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=2421820598"
+											target="_blank">日后再说好不好</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvCQyvFgyvm8SONTT&amp;trade_id=UOFkuvCcLMGvbvmQ4OmQG"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_blue_5.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=997276735048843"
+											title="xunlei迅雷会员vip账号12h 一人一号0.01高速下载离线云播白金6h"
+											target="_blank">xunlei迅雷会员vip账号12h 一人一号0.01高速下载离...</a>
+											<p class="price">
+												<em>0.01</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-238344330779" data-id="238344330779">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+											<p>
+												<span class="bracket">[<a data-spm-protocol="i"
+													data-spm="d4910293"
+													href="//service.taobao.com/support/help-16480.htm"
+													target="_blank">不计分</a>]
+												</span>
+											</p></td>
+										<td class="J_ReviewContent">
+											<p class="comment">评价方未及时做出评价,系统默认好评!</p>
+											<p class="date">[2015-04-04 14:10:42]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=80337009"
+											target="_blank">chanzq</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UOmNGvGcWvmkT&amp;trade_id=UOFkbvmIbOFILMGg4OmQG"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_1.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=995025926788843"
+											title="迅雷会员出租12h小时VIP一分钱独享24小时0.01元白金账号自动秒发" target="_blank">迅雷会员出租12h小时VIP一分钱独享24小时0.01元白金...</a>
+											<p class="price">
+												<em>0.1</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-238321680696" data-id="238321680696">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">评价方未及时做出评价,系统默认好评!</p>
+											<p class="date">[2015-04-03 14:30:10]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=180933456"
+											target="_blank">lmn1017</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvFgWOFvGMm8L&amp;trade_id=UOFkyvm8WOFNbOmk4OmQG"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_blue_1.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=992050905898843"
+											title="春夏MAX全掌气垫跑步鞋休闲男女鞋透气网布慢跑鞋飞线彩虹运动鞋" target="_blank">春夏MAX全掌气垫跑步鞋休闲男女鞋透气网布慢跑鞋飞线...</a>
+											<p class="price">
+												<em>699.0</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-237399197841" data-id="237399197841">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">评价方未及时做出评价,系统默认好评!</p>
+											<p class="date">[2015-03-23 17:30:04]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=80337009"
+											target="_blank">chanzq</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UOmNGvGcWvmkT&amp;trade_id=UOFkWMFkWMmIbvmk4OmQG"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_1.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=990590425098843"
+											title="迅雷会员出租12h小时VIP一分钱独享24小时0.01元白金账号自动秒发" target="_blank">迅雷会员出租12h小时VIP一分钱独享24小时0.01元白金...</a>
+											<p class="price">
+												<em>0.1</em>元
+											</p></td>
+										<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">已回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+									<tr class="feedback-235892049867" data-id="235892049867">
+										<td class="align-c"><i class="tb-rate-ico ico-good">好评</i>
+										</td>
+										<td class="J_ReviewContent">
+											<p class="comment">谢谢光临欢迎下次再来！</p>
+											<p class="date">[2015-02-26 14:00:31]</p>
+										</td>
+										<td>卖家： <a
+											href="//store.taobao.com/shop/view_shop.htm?user_number_id=2382978964"
+											target="_blank">店宝宝软件总经销</a> <a
+											href="//rate.taobao.com/rate.htm?user_id=UvCv4vCkuOmkLMNTT&amp;trade_id=UOFc0vGHuMm8YMFH4OmQG"
+											target="_blank"><img
+												src="//img.alicdn.com/newrank/s_cap_2.gif" class="rank"
+												border="0"></a>
+										</td>
+										<td><a
+											href="//tradearchive.taobao.com/trade/detail/trade_snap.htm?trade_id=974317451518843"
+											title="迅雷会员出租12小时VIP一分钱独享24小时自动秒发0.01元时间充足" target="_blank">迅雷会员出租12小时VIP一分钱独享24小时自动秒发0....</a>
+											<p class="price">
+												<em>0.01</em>元
+											</p></td>
+									<td class="align-c op">
+											<div class="reply-action">
+												<button type="button"
+													class="J_Reply tb-rate-btn type-taobao size-xs">回复</button>
+												<p class="duedate" title="2015-08-28 13:07:48"></p>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/row-->
+</e:override>
+
+<%@include file="/merchant/main.jsp"%>

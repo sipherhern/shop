@@ -1,0 +1,244 @@
+package com.shop.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Collect;
+import com.shop.entity.Customer;
+import com.shop.entity.Product;
+import com.shop.entity.Shop;
+import com.shop.service.CollectService;
+
+@SuppressWarnings({ "unchecked", "rawtypes" })
+@Component
+public class CollectServiceImpl extends BaseServiceImpl implements
+		CollectService {
+
+	@Override
+	public int followShop(Collect collect) throws Exception {
+		Shop shop = new Shop();
+		Map<String, Object> sh = new HashMap<String, Object>();
+		// get shopUuid
+		int shop_id = collect.getShop().getShopId();
+		int cust_id = collect.getCustId();
+		sh.put("shopId", shop_id);
+		sh.put("custId", cust_id);
+		// check whether exists the collect record
+		try {
+			if (!this
+					.find("from Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId",
+							sh).isEmpty())
+				return 202;
+			else {
+				// add a new collect record
+				sh.remove("custId");
+				List list = this.find("from Shop s where s.shopId = :shopId",
+						sh);
+				shop = (Shop) list.get(0);
+				collect.setCollectDate(new Date());
+				collect.setCollectType("shop");
+				collect.setShop(shop);
+				this.save(collect);
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int followProduct(Collect collect) throws Exception {
+		Product product = new Product();
+		Map<String, Object> p = new HashMap<String, Object>();
+		// get prodId
+		int prod_id = collect.getProduct().getProdId();
+		int cust_id = collect.getCustId();
+		p.put("prodId", prod_id);
+		p.put("custId", cust_id);
+		// check whether exists the collect record or not
+		try {
+			if (!this
+					.find("from Collect c inner join c.product p where p.prodId = :prodId and c.custId = :custId",
+							p).isEmpty())
+				return 202;
+			else {
+				// add a new collect record
+				p.remove("custId");
+				List list = this.find(
+						"from Product p where p.prodId = :prodId", p);
+				product = (Product) list.get(0);
+				collect.setCollectDate(new Date());
+				collect.setCollectType("product");
+				collect.setProduct(product);
+				this.save(collect);
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int unfollowShop(int shop_id, int custId) throws Exception {
+		Collect collect = new Collect();
+		Map<String, Object> shop = new HashMap<String, Object>();
+		try {
+			shop.put("shopId", shop_id);
+			shop.put("custId", custId);
+			List list = this
+					.find("From Collect c inner join c.shop s inner join c.customer cust where s.shopId = :shopId and cust.custId = :custId",
+							shop);
+			// check whether exists the collect record or not
+			if (list.isEmpty()) {
+				return 202;
+			} else {
+				// delete corresponding collect record
+				for (Object object : list) {
+					Object[] obj = (Object[]) object;
+					collect = (Collect) obj[0];
+					this.delete(collect);
+				}
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int unfollowProduct(int prod_id, int custId) throws Exception {
+		Collect collect = new Collect();
+		Map<String, Object> product = new HashMap<String, Object>();
+		try {
+			product.put("prodId", prod_id);
+			product.put("custId", custId);
+			List list = this
+					.find("From Collect c inner join c.product s inner join c.customer cust where s.prodId = :prodId and cust.custId = :custId",
+							product);
+			// check whether exists the collect record or not
+			if (list.isEmpty()) {
+				return 202;
+			} else {
+				// delete corresponding collect record
+				for (Object object : list) {
+					Object[] obj = (Object[]) object;
+					collect = (Collect) obj[0];
+					this.delete(collect);
+				}
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getProdCollectPage(int cust_id)
+			throws Exception {
+		Map<String, Object> cust = new HashMap<String, Object>();
+		cust.put("custId", cust_id);
+		String hql = "HQM: select ps.picUrl,prod.prodName,prod.prodPrice,prod.prodSell from Collect c inner join c.product prod inner join prod.pictureRelates p inner join p.pictures ps "
+				+ "where c.custId = :custId group by prod.prodId";
+		try {
+			List<Map<String, Object>> result = this.find(hql, 1, 10, cust);
+			return result;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getShopCollectPage(int cust_id)
+			throws Exception {
+		Map<String, Object> cust = new HashMap<String, Object>();
+		cust.put("custId", cust_id);
+		String hql = "HQM:select ps.picUrl,s.shopName,s.shopFollowers,s.shopProductNum,s.shopLastprod from Collect c inner join c.shop s inner join s.pictureRelates p inner join p.pictures ps "
+				+ "where c.custId = :custId";
+		List<Map<String, Object>> result = this.find(hql, 1, 10, cust);
+
+		String hql1 = "HQM:select s.shopLastprom from Collect c inner join c.shop s inner join s.pictureRelates p inner join p.pictures ps "
+				+ "where c.custId = :custId";
+		List<Map<String, Object>> tag1 = this.find(hql, 1, 10, cust);
+		
+		Map map = (Map) result.get(0);
+		Iterator iterator = map.keySet().iterator();
+		while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+			Object object = map.get(key);
+			System.out.println(object.toString());
+		}
+
+		/*
+		 * for (Object object : result) { Object[] obj = (Object[]) object; Date
+		 * lastProm = (Date) obj[4]; Date lastProd = (Date) obj[5];
+		 * result.add(this.judgmentDate(lastProd, new Date()));
+		 * result.add(this.judgmentDate(lastProm, new Date())); }
+		 */
+
+		return result;
+	}
+	
+	@Override
+	public int getShopFollNum(Customer customer) throws Exception {
+		int cust_id = customer.getCustId();
+		int count = 0;
+		String hql = "select count(c.shop) from Collect c where c.custId = :custId";
+		try {
+			Query query = this.getCurrentSession().createQuery(hql);
+			query.setInteger("custId", cust_id);
+			query.setMaxResults(1);
+			count = ((Number) query.uniqueResult()).intValue();
+			return count;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	@Override
+	public int getProdFollNum(Customer customer) throws Exception {
+		int cust_id = customer.getCustId();
+		int count = 0;
+		String hql = "select count(c.product) from Collect c where c.custId = :custId ";
+		try {
+			Query query = this.getCurrentSession().createQuery(hql);
+			query.setInteger("custId", cust_id);
+			query.setMaxResults(1);
+			count = ((Number) query.uniqueResult()).intValue();
+			return count;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	@Override
+	public Map<String, Object> judgmentDate(Date start, Date end)
+			throws Exception {
+		Map<String, Object> hashMap = new HashMap<String, Object>();
+		long dif = end.getTime() - start.getTime();
+		if (dif < 0) {
+			hashMap.put("lastProd", false);
+			// return false;
+		}
+		double result = dif * 1.0 / (1000 * 60 * 60);
+		if (result <= 168) {
+			hashMap.put("lastProd", true);
+		} else {
+			hashMap.put("lastProd", false);
+		}
+		return hashMap;
+	}
+}

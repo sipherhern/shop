@@ -1,0 +1,19 @@
+package com.shop.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import com.pingplusplus.model.Charge;
+import com.shop.entity.Customer;
+
+public interface OrderService {
+	public JSONObject CreateDirectly(int prodAmount,int addressId,int customerId,
+			int skuId);
+	public String CreateByCartitem(String custUuid,int addressId);
+	public void ConfirmOrder(JSONObject json,BigDecimal orderShipping);
+	public JSONArray ListOrderByPage(int pageSize,int pageIndex,int custId);
+	public Charge RequestPayOrder(JSONObject obj);
+}

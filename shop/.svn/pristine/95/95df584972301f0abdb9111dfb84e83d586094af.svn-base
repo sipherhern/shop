@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-17 23:39:21 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.News" table="news" catalog="shop">
+        <id name="newId" type="java.lang.Integer">
+            <column name="new_id" />
+            <generator class="identity" />
+        </id>
+        <property name="newUuid" type="string">
+            <column name="new_uuid" length="32" not-null="true" />
+        </property>
+        <property name="newContent" type="string">
+            <column name="new_content" length="200">
+                <comment>&#215;&#202;&#209;&#182;&#196;&#218;&#200;&#221;</comment>
+            </column>
+        </property>
+        <property name="newType" type="string">
+            <column name="new_type" length="12" not-null="true">
+                <comment>&#215;&#202;&#209;&#182;&#192;&#224;&#208;&#205;&#161;&#162;1&#161;&#162;&#185;&#227;&#184;&#230;
+                2&#161;&#162;&#181;&#234;&#198;&#204;&#215;&#202;&#209;&#182;</comment>
+            </column>
+        </property>
+        <property name="newDate" type="timestamp">
+            <column name="new_date" length="19" not-null="true" />
+        </property>
+        <property name="shopId" type="java.lang.Integer">
+            <column name="shop_id" />
+        </property>
+        <set name="pictureRelates" table="picture_relate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="new_id" />
+            </key>
+            <one-to-many class="com.shop.entity.PictureRelate" />
+        </set>
+    </class>
+</hibernate-mapping>

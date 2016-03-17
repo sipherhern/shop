@@ -1,0 +1,47 @@
+package com.shop.controller.user;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.Customer;
+import com.shop.service.CustomerService;
+@Component
+@RequestMapping(value = "/shopuser/customer")
+public class CustomerController extends RequestContext{
+	@Autowired
+	private CustomerService customerService;
+	/**
+	 * 商铺用户登录
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "login", method = RequestMethod.POST,consumes = "application/json")
+	public void login(@RequestBody JSONObject json,
+			HttpServletResponse response) throws IOException{
+		String custUname = json.getString("custUname");
+		String custPwd = json.getString("custPwd");
+		Customer customer = new Customer();
+		customer.setCustUname(custUname);
+		customer.setCustPwd(custPwd);
+		Customer newcustomer = customerService.login(customer);//判断是否登录成功
+		if(newcustomer == null)
+		{
+			response.setStatus(203);//登录失败
+			return;
+		}
+		else
+		{
+			this.persistCustomer(newcustomer);
+		}
+	}
+}

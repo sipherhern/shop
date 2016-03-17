@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-29 21:11:51 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.ProdRefund" table="prod_refund" catalog="shop">
+        <id name="refundId" type="java.lang.Integer">
+            <column name="refund_id" />
+            <generator class="identity" />
+        </id>
+        <property name="refundUuid" type="string">
+            <column name="refund_uuid" length="32" not-null="true" />
+        </property>
+        <property name="refundContent" type="string">
+            <column name="refund_content" length="200" not-null="true">
+                <comment>&#196;&#218;&#200;&#221;</comment>
+            </column>
+        </property>
+        <property name="refundEnabled" type="boolean">
+            <column name="refund_enabled" not-null="true" />
+        </property>
+        <property name="refundType" type="string">
+            <column name="refund_type" length="15" not-null="true">
+                <comment>&#205;&#203;&#187;&#245;&#215;&#180;&#204;&#172;</comment>
+            </column>
+        </property>
+        <property name="refundDate" type="timestamp">
+            <column name="refund_date" length="19">
+                <comment>&#205;&#203;&#187;&#245;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="refundPaied" type="big_decimal">
+            <column name="refund_paied" precision="11" not-null="true">
+                <comment>&#202;&#181;&#188;&#202;&#205;&#203;&#191;&#238;&#189;&#240;&#182;&#238;</comment>
+            </column>
+        </property>
+        <set name="orders" table="order" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="refund_id">
+                    <comment>&#205;&#203;&#187;&#245;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Order" />
+        </set>
+        <set name="pictureRelates" table="picture_relate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="return_id" />
+            </key>
+            <one-to-many class="com.shop.entity.PictureRelate" />
+        </set>
+    </class>
+</hibernate-mapping>

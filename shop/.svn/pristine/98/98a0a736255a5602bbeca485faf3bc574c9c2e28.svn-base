@@ -1,0 +1,217 @@
+package com.shop.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.News;
+import com.shop.entity.PictureRelate;
+import com.shop.entity.Pictures;
+import com.shop.service.NewsService;
+import com.shop.util.UUIdutil;
+
+@SuppressWarnings("rawtypes")
+@Component
+public class NewsServiceImpl extends BaseServiceImpl<Object> implements
+		NewsService {
+
+	@Override
+	public int addNews(News news) throws Exception {
+		try {
+			news.setNewUuid(UUIdutil.uuid());
+			news.setNewType("infomation");
+			news.setNewDate(new Date());
+			this.save(news);
+			return 200;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int deleteNews(int new_id) throws Exception {
+		News news = new News();
+		Map<String, Object> n = new HashMap<String, Object>();
+		n.put("newId", new_id);
+		try {
+			// check whether exists the record
+			List list = this.find("From News n where n.newId = :newId", n);
+			if (list.isEmpty()) {
+				return 202;
+			} else {
+				news = (News) list.get(0);
+				this.delete(news);
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int updateNews(News news) throws Exception {
+		try {
+			this.update(news);
+			return 200;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public List getNewsPage(int shop_id, int pageIndex, int pageSize) throws Exception {
+		try {
+			Map<String, Object> n = new HashMap<String, Object>();
+			n.put("shopId", shop_id);
+			String hql = "from News n where n.shopId = :shopId";
+			List list = this.find(hql, pageIndex, pageSize, n);
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public int addAdvertise(News news, ArrayList<Pictures> picture)
+			throws Exception {
+		try {
+			// news补充参数
+			news.setNewUuid(UUIdutil.uuid());
+			news.setNewDate(new Date());
+			news.setNewType("advertising");
+			for (int i = 0; i < picture.size(); i++) {
+				picture.get(i).setPicUuid(UUIdutil.uuid());
+				picture.get(i).setPicType("advertising");
+				PictureRelate pr = new PictureRelate();
+				pr.setNews(news);
+				pr.setPictures(picture.get(i));
+				news.getPictureRelates().add(pr);
+				this.save(pr);
+				this.save(picture.get(i));
+			}
+			this.save(news);
+			return 200;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int updateAdvertise(News news, ArrayList<Pictures> picture)
+			throws Exception {
+		PictureRelate opr = new PictureRelate();
+		Pictures opic = new Pictures();
+		Map<String, Object> n = new HashMap<String, Object>();
+		String hql = "From News n inner join n.pictureRelates pr inner join pr.pictures p where n.newId = :newId";
+		n.put("newId", news.getNewId());
+		List list = this.find(hql, n);
+		try {
+			if (list.isEmpty()) {
+				return 202;
+			} else {
+				// 先删掉原来的广告图片
+				for (Object object : list) {
+					Object[] obj = (Object[]) object;
+					opr = (PictureRelate) obj[1];
+					opic = (Pictures) obj[2];
+					this.delete(opr);
+					this.delete(opic);
+				}
+				// 保存更改后的所有图片
+				for (int i = 0; i < picture.size(); i++) {
+					picture.get(i).setPicUuid(UUIdutil.uuid());
+					picture.get(i).setPicType("advertising");
+					PictureRelate pr = new PictureRelate();
+					pr.setNews(news);
+					pr.setPictures(picture.get(i));
+					news.getPictureRelates().add(pr);
+					this.save(pr);
+					this.save(picture.get(i));
+				}
+				this.merge(news);
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int delAdvertise(int new_id) throws Exception {
+		News news = new News();
+		PictureRelate pr = new PictureRelate();
+		Pictures pic = new Pictures();
+		Map<String, Object> n = new HashMap<String, Object>();
+		n.put("newId", new_id);
+		try {
+			List list = this
+					.find("From News n inner join n.pictureRelates pr inner join pr.pictures p where n.newId = :newId",
+							n);
+			if (list.isEmpty()) {
+				return 202;
+			} else {
+				for (Object object : list) {
+					Object[] obj = (Object[]) object;
+					news = (News) obj[0];
+					pr = (PictureRelate) obj[1];
+					pic = (Pictures) obj[2];
+					this.delete(pr);
+					this.delete(pic);
+					this.delete(news);
+				}
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public List getAdvertisePage(int shop_id) throws Exception {
+		Map<String, Object> n = new HashMap<String, Object>();
+		n.put("shopId", shop_id);
+		String hql = "from News n inner join n.pictureRelates pr inner join pr.pictures p where n.shopId = :shopId group by pr.picId";
+		return this.find(hql, 1, 5, n);
+	}
+
+	@Override
+	public List getAdvertiseToHomePage() throws Exception {
+		String hql = "select p.picUrl as picUrl,prod.prodId as prodId,prod.prodUuid as prodUuid from News n inner join n.pictureRelates pr inner join pr.pictures p inner join pr.product prod where n.newType = 'advertising'";
+		try {
+			Query query = this.getCurrentSession().createQuery(hql);
+			query.setMaxResults(5);
+			List list = query.list();
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public String getProductUuid(int shop_id) throws Exception {
+		String hql = "select p.prodUuid from Product p where p.shop.shopId = :shopId order by p.prodDate DESC";
+		try {
+			Query query = this.getCurrentSession().createQuery(hql);
+			query.setInteger("shopId", shop_id);
+			query.setMaxResults(1);
+			String prodUuid = ((String) query.uniqueResult()).toString();
+			return prodUuid;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+}

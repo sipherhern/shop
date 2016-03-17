@@ -1,0 +1,141 @@
+package com.shop.controller.user;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.News;
+import com.shop.entity.Pictures;
+import com.shop.entity.Product;
+import com.shop.service.NewsService;
+import com.shop.service.ProductService;
+
+@SuppressWarnings("rawtypes")
+@Controller
+@RequestMapping("/shopsys/news")
+public class NewsController extends RequestContext {
+
+	@Autowired
+	private NewsService sysNewsService;
+	
+	@Autowired
+	private ProductService productService;
+
+	@ResponseBody
+	@RequestMapping(value = "addNews", method = RequestMethod.POST, consumes = "application/json")
+	public void addNews(HttpServletResponse res, @RequestBody JSONObject json)
+			throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		News news = new News();
+		try {
+			news = objectMapper.readValue(json.toString(), News.class);
+			res.setStatus(sysNewsService.addNews(news));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "updateNews", method = RequestMethod.POST, consumes = "application/json")
+	public void updateNews(HttpServletResponse res, @RequestBody JSONObject json)
+			throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		News news = new News();
+		try {
+			news = objectMapper.readValue(json.toString(), News.class);
+			res.setStatus(sysNewsService.updateNews(news));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "delNews", method = RequestMethod.POST, consumes = "application/json")
+	public void delNews(HttpServletResponse res, @RequestBody JSONObject json)
+			throws Exception {
+		int news_id = json.getInt("newId");
+		try {
+			res.setStatus(sysNewsService.deleteNews(news_id));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	@ResponseBody
+	@RequestMapping(value = "findNewsByPage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray findNewsByPage(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int shop_id = json.getInt("shopId");
+		json.remove("shopId");
+		News news = new News();
+		JSONArray jsonArray = new JSONArray();
+		// get the result list
+		try {
+			List list = sysNewsService.getNewsPage(shop_id); 
+			if (list.isEmpty()) {
+				res.setStatus(204);
+				return null;
+			} else {
+				for (Object object : list) {
+					news = (News) object;
+					json.put("newContent", news.getNewContent());
+					json.put("newDate", news.getNewDate());
+					jsonArray.add(json);
+				}
+				Product product = productService.findProductDetail(sysNewsService.getProductPage(shop_id));
+				json.put("ProdName",product.getProdName());
+				//json.put(key, product.getPictureRelates().)
+				jsonArray.add(json);
+				res.setStatus(200);
+				return jsonArray;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "findAdvertiseByPage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray findAdvertiseByPage(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int shop_id = json.getInt("shopId");
+		json.remove("shopId");
+		News news = new News();
+		Pictures picture = new Pictures();
+		JSONArray jsonArray = new JSONArray();
+		List list = sysNewsService.getAdvertisePage(shop_id);
+		if (list.isEmpty()) {
+			res.setStatus(204);
+			return null;
+		} else {
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				news = (News) obj[0];
+				picture = (Pictures) obj[2];
+				json.put("newDate", news.getNewDate());
+				json.put("picName", picture.getPicName());
+				json.put("picUrl", picture.getPicUrl());
+				jsonArray.add(json);
+			}
+			res.setStatus(200);
+			return jsonArray;
+		}
+	}
+}

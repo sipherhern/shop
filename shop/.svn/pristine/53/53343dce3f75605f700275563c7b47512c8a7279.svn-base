@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-29 21:11:51 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Cartitem" table="cartitem" catalog="shop">
+        <id name="cartitemId" type="java.lang.Integer">
+            <column name="cartitem_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="skuProd" class="com.shop.entity.SkuProd" fetch="select">
+            <column name="skuprod_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="customer" class="com.shop.entity.Customer" fetch="select">
+            <column name="cust_id" not-null="true" />
+        </many-to-one>
+        <property name="cartitemQuantity" type="int">
+            <column name="cartitem_quantity" not-null="true" />
+        </property>
+        <property name="cartitemUuid" type="string">
+            <column name="cartitem_uuid" length="32" not-null="true" />
+        </property>
+        <property name="cartitemDate" type="timestamp">
+            <column name="cartitem_date" length="19"  />
+        </property>
+    </class>
+</hibernate-mapping>

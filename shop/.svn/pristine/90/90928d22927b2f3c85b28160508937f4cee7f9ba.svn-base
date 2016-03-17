@@ -1,0 +1,206 @@
+<%@ page language="java" import="java.util.*"
+	contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="layout.tld" prefix="e"%>
+
+<e:override name="title">股东汇 | 管理平台</e:override>
+
+
+<e:override name="content_right">
+	<ul class="breadcrumb">
+		<li><i class="icon-home"></i> <a href="index.html">Home</a> <i
+			class="icon-angle-right"></i></li>
+		<li><a href="#">Logis</a></li>
+	</ul>
+
+	<div class="row-fluid">
+		<div class="box span12">
+			<div class="box-content">
+
+				<h2>新增运费模板</h2>
+				<form method="post">
+					<input name='_tb_token_' type='hidden' value='CVe5Zp0BWL5E89A'>
+
+
+					<input type="hidden" name="action"
+						value="user/template_setting_action" /> <input type="hidden"
+						name="event_submit_do_create_template" value="1" /> <input
+						type="hidden" name="isUpdate" value="" /> <input id="J_Cube"
+						type="hidden" value="m&#179" /> <input type="hidden"
+						name="templateId" value="0" /> <input type="hidden"
+						name="templateName" value="" /> <input type="hidden"
+						name="auctionids" value="" /> <input type="hidden"
+						name="forceSellerPay" value="false" /> <input type="hidden"
+						name="unique" value="" /> <input type="hidden" name="type"
+						value="" /> <input type="hidden" name="freeType" value=""
+						id="J_FreeValue" /> <input type="hidden" name="fromType" value="" />
+					<input type="hidden" name="selectedPostageid" value="" /> <input
+						type="hidden" name="postageid" value="" /> <input type="hidden"
+						name="auctionid" value="" /> <input type="hidden"
+						name="categoryid" value="" /> <input type="hidden"
+						name="isSupportWandV" value="true" />
+					<ul>
+						<!--  模板名称设置  -->
+						<li class="form-elem">
+							<div class="control-group">
+								<div class="controls">
+									模板名称：<input type="text" name="moban" /><a
+										href="//wuliu.taobao.com/user/logis_tools.htm?tabSource=queryCarriRate"
+										target="_blank">&nbsp;&nbsp;运费计算器</a>
+								</div>
+							</div>
+
+
+
+						</li>
+						<!--  卖家地址设置  -->
+						<li class="form-elem"><span class="label-like">宝贝地址：</span> <span
+							id="J_AddressChoose"></span> <span id="J_AddressChoose"> <select
+								id="J_LogisProvince" name="province" title="所在省"></select>&nbsp;省
+								<select id="J_LogisCity" name="city" title="市"></select>&nbsp;市
+								<select id="J_LogisArea" name="county" title="区"></select>&nbsp;区
+						</span></li>
+						<li class="form-elem"><span class="label-like">发货时间：</span> <span
+							class="fare-time"> <input type="hidden"
+								id="J_FareTimeResult" name="consignDate" value=""> <!--
+    					<select name="consignDate" id="J_prescription">
+							<option>请选择..</option>							<option value="4">4小时内</option>
+							<option value="8">8小时内</option>
+    						<option value="12">12小时内</option>
+							<option value="16">16小时内</option>
+    						<option value="20">20小时内</option>
+							<option value="24">1天内</option>
+							<option value="48" >2天内</option>
+    						<option value="72">3天内</option>
+    						<option value="120">5天内</option>
+    						<option value="168">7天内</option>
+							<option value="192">8天内</option>
+							<option value="240">10天内</option>
+							<option value="288">12天内</option>
+    						<option value="360">15天内</option>
+							<option value="408">17天内</option>
+							<option value="480">20天内</option>
+							<option value="600">25天内</option>
+    						<option value="720">30天内</option>
+							<option value="840">35天内</option>
+							<option value="1080">45天内</option>
+    					</select>
+						-->
+						</span> <span>如实设定宝贝的发货时间，不仅可避免发货咨询和纠纷，还能促进成交！<a
+								href="//service.taobao.com/support/knowledge-5609752.htm?spm=0.0.0.0.IajNfS&dkey=searchview"
+								target="_blank">详情</a></span></li>
+						<!--  是否包邮设置  -->
+						<li class="form-elem J_Freight"><div class="control-group">
+								<label class="control-label">是否包邮：</label>
+								<div class="controls">
+									<label class="radio inline"> <input type="radio"
+										id="inlineradio1" value="-4">&nbsp;自定义运费
+									</label> <label class="radio inline"> <input type="radio"
+										id="inlineradio2" value="-7">&nbsp;卖家承担运费
+									</label>
+								</div>
+							</div></li>
+						<!--  记价方式设置  -->
+						<li class="form-elem calc-method">
+							<div class="control-group">
+								<label class="control-label">计价方式：</label>
+								<div class="controls">
+									<label class="radio inline"> <input type="radio"
+										id="inlineradio1" value="-4">&nbsp;按件数
+									</label> <label class="radio inline"> <input type="radio"
+										id="inlineradio2" value="-7">&nbsp;按重量
+									</label> <label class="radio inline"> <input type="radio"
+										id="inlineradio3" value="-1">&nbsp;按体积
+									</label>
+								</div>
+							</div>
+						</li>
+						<!--  区域限售  -->
+						<!-- 运费方式设置  -->
+						<li class="form-elem express"><span class="label-like">运送方式：</span>
+							<div class="control-group">
+								<label class="control-label">除指定地区外，其余地区的运费采用“默认运费”</label>
+								<div class="controls">
+									<label class="checkbox inline"> <input type="checkbox"
+										id="inlineCheckbox1" value="-4">快递
+									</label> <label class="checkbox inline"> <input type="checkbox"
+										id="inlineCheckbox2" value="-7">EMS
+									</label> <label class="checkbox inline"> <input type="checkbox"
+										id="inlineCheckbox3" value="-1">平邮
+									</label>
+								</div>
+							</div></li>
+
+						<!-- 运费方式设置  -->
+						<li class="form-elem set-free">
+							<p class="free-title">
+								<input type="checkbox" value="1" id="J_SetFree"> 指定条件包邮
+								<i> <img
+									src="//img.alicdn.com/tps/i1/TB1Sw5KFVXXXXb7XFXX1xhnFFXX-23-12.png">
+								</i> 可选
+							</p>
+							<table class="table">
+								<colgroup>
+									<col width="21%"></col>
+									<col width="16%"></col>
+									<col width="16%"></col>
+									<col width="32%"></col>
+									<col width="13%"></col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th>选择地区</th>
+										<th>选择运送方式</th>
+										<th>选择快递</th>
+										<th>设置包邮条件</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody id="J_Tbody">
+									<tr>
+										<td><input type="hidden" class="address-area"
+											name="areas" value=""> <a href="#"
+											class="acc_popup edit J_Edit" title="编辑运送区域" data-areas="">编辑</a>
+											<div class="area-group">
+												<p>未添加地区</p>
+											</div></td>
+										<td><select name="transType" class="span10">
+
+										</select></td>
+										<td><select name="serviceType" class="span10">
+
+										</select></td>
+										<td>
+											<p class="free-contion">
+												满 <input type="text" value="" class="span5"> 件 包邮
+											</p>
+										</td>
+										<td><a href="" class="halflings-icon plus"><i></i></a><a
+											href="" class="halflings-icon minus"><i></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</li>
+					</ul>
+					<button type="submit">保存并返回</button>
+					<button type="button"
+						onclick="window.location='https://delivery.taobao.com/user/template_list.htm?fromType=&amp;auctionids=&amp;auctionid=&amp;selectedPostageid=&amp;postageid='">
+						取消</button>
+					<hr>
+					<input type="hidden" name="deliveryJson" id="J_TPLPostData"
+						value='' /> <input type="hidden" name="deliveryAddress"
+						id="J_address" value='' /> <input type="hidden"
+						name="deliveryPrescription" id="J_deliveryPrescription" value='' />
+					<input type="hidden" name="hasConsignDate" value='false' /> <input
+						type="hidden" name="consignDateValue" id="J_consignDateValue"
+						value='' />
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!--/row-->
+</e:override>
+
+<%@include file="/merchant/main.jsp"%>

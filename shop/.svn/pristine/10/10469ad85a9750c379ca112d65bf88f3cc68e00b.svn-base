@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 14:30:31 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.ProdCommt" table="prod_commt" catalog="shop">
+        <id name="procId" type="java.lang.Integer">
+            <column name="proc_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="customer" class="com.shop.entity.Customer" fetch="select">
+            <column name="cust_id" not-null="true">
+                <comment>&#211;&#195;&#187;&#167;ID</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="product" class="com.shop.entity.Product" fetch="select">
+            <column name="prod_id" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;ID</comment>
+            </column>
+        </many-to-one>
+        <property name="procUuid" type="string">
+            <column name="proc_uuid" length="32" not-null="true">
+                <comment>&#198;&#192;&#194;&#219;UUID &#163;&#168;&#214;&#247;&#188;&#252;&#163;&#169;</comment>
+            </column>
+        </property>
+        <property name="commtContent" type="string">
+            <column name="commt_content" length="100">
+                <comment>&#198;&#192;&#194;&#219;&#196;&#218;&#200;&#221;</comment>
+            </column>
+        </property>
+        <property name="commtScore" type="java.lang.Integer">
+            <column name="commt_score">
+                <comment>&#198;&#192;&#183;&#214;</comment>
+            </column>
+        </property>
+        <property name="commtDate" type="timestamp">
+            <column name="commt_date" length="19" not-null="true">
+                <comment>&#198;&#192;&#194;&#219;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="isCustomer" type="boolean">
+            <column name="is_customer" not-null="true">
+                <comment>&#202;&#199;&#183;&#241;&#206;&#170;&#185;&#203;&#191;&#205;.1&#202;&#199;&#185;&#203;&#191;&#205;</comment>
+            </column>
+        </property>
+        <property name="commtType" type="string">
+            <column name="commt_type" length="10" not-null="true" />
+        </property>
+        <property name="commtReply" type="string">
+            <column name="commt_reply" length="100">
+                <comment>&#187;&#216;&#184;&#180;&#198;&#192;&#194;&#219;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

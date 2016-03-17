@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 16:35:45 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Product" table="product" catalog="shop">
+        <id name="prodId" type="java.lang.Integer">
+            <column name="prod_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="promotion" class="com.shop.entity.Promotion" fetch="select">
+            <column name="prom_id">
+                <comment>&#180;&#217;&#207;&#250;&#192;&#224;&#208;&#205;</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="thirdClass" class="com.shop.entity.ThirdClass" fetch="select">
+            <column name="third_class_id" />
+        </many-to-one>
+        <many-to-one name="shop" class="com.shop.entity.Shop" fetch="select">
+            <column name="shop_id" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#203;&#249;&#202;&#244;&#181;&#234;&#198;&#204;</comment>
+            </column>
+        </many-to-one>
+        <property name="prodUuid" type="string">
+            <column name="prod_uuid" length="32" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;UUID</comment>
+            </column>
+        </property>
+        <property name="shipUuid" type="string">
+            <column name="ship_uuid" length="32" not-null="true" />
+        </property>
+        <property name="prodPrice" type="big_decimal">
+            <column name="prod_price" precision="7" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#215;&#238;&#208;&#161;&#188;&#219;&#184;&#241;</comment>
+            </column>
+        </property>
+        <property name="prodStore" type="int">
+            <column name="prod_store" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#215;&#238;&#180;&#243;&#180;&#162;&#180;&#230;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="prodName" type="string">
+            <column name="prod_name" length="100" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#195;&#251;</comment>
+            </column>
+        </property>
+        <property name="prodDate" type="timestamp">
+            <column name="prod_date" length="19" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#183;&#162;&#178;&#188;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="prodSell" type="int">
+            <column name="prod_sell" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#215;&#220;&#202;&#219;&#179;&#246;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="prodDesc" type="string">
+            <column name="prod_desc" length="65535" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#207;&#234;&#199;&#233;&#195;&#232;&#202;&#246;</comment>
+            </column>
+        </property>
+        <property name="prodType" type="string">
+            <column name="prod_type" length="12" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#215;&#180;&#204;&#172;</comment>
+            </column>
+        </property>
+        <property name="prodWeight" type="big_decimal">
+            <column name="prod_weight" precision="7" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#214;&#216;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="prodCode" type="string">
+            <column name="prod_code" length="32" not-null="true">
+                <comment>&#201;&#204;&#198;&#183;&#204;&#245;&#208;&#206;&#194;&#235;</comment>
+            </column>
+        </property>
+        <property name="prodShipping" type="big_decimal">
+            <column name="prod_shipping" precision="7" not-null="true">
+                <comment>&#202;&#199;&#183;&#241;&#176;&#252;&#211;&#202;(&#212;&#203;&#183;&#209;)</comment>
+            </column>
+        </property>
+        <property name="prodFoll" type="int">
+            <column name="prod_foll" not-null="true">
+                <comment>&#215;&#220;&#185;&#216;&#215;&#162;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="prodCommentNum" type="int">
+            <column name="prod_comment_num" not-null="true">
+                <comment>&#215;&#220;&#198;&#192;&#194;&#219;&#202;&#253;</comment>
+            </column>
+        </property>
+        <property name="prodTotalscore" type="float">
+            <column name="prod_totalscore" precision="12" scale="0" not-null="true">
+                <comment>&#215;&#220;&#181;&#195;&#183;&#214;</comment>
+            </column>
+        </property>
+        <set name="pictureRelates" table="picture_relate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="prod_id" />
+            </key>
+            <one-to-many class="com.shop.entity.PictureRelate" />
+        </set>
+        <set name="collects" table="collect" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="prod_id">
+                    <comment>&#201;&#204;&#198;&#183;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Collect" />
+        </set>
+        <set name="skuProds" table="sku_prod" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="prod_id" not-null="true" />
+            </key>
+            <one-to-many class="com.shop.entity.SkuProd" />
+        </set>
+        <set name="prodCommts" table="prod_commt" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="prod_id" not-null="true">
+                    <comment>&#201;&#204;&#198;&#183;ID</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.ProdCommt" />
+        </set>
+    </class>
+</hibernate-mapping>

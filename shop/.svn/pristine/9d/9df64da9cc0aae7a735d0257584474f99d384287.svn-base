@@ -1,0 +1,337 @@
+package com.shop.controller.user;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.PictureRelate;
+import com.shop.entity.Pictures;
+import com.shop.entity.Product;
+import com.shop.entity.vo.PageSet;
+import com.shop.service.ProductService;
+import com.shop.util.JSONConfig;
+
+@Component
+@RequestMapping(value = "/user/product")
+public class ProductController extends RequestContext {
+
+	@Autowired
+	private ProductService productservice;
+
+	@ResponseBody
+	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	public void test() {
+
+		String test = "product : test";
+
+		productservice.test(test);
+
+		System.out.println("ddd");
+	}
+
+	/**
+	 * 查询 某一 店铺下 的 所有商品
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findByshop", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray findByshop(@RequestBody JSONObject json,
+			HttpServletResponse res) {
+
+		String shopUuid = null;
+		String pageIndex = null;
+		Integer pageSize = null;
+		try {
+			shopUuid = json.getString("shopUuid");
+
+			pageIndex = json.getString("pageIndex");
+
+			pageSize = json.optInt("pageSize");
+		} catch (Exception e) {
+
+			res.setStatus(403);
+			e.printStackTrace();
+
+			return null;
+		}
+
+		PageSet<Product> productpageset = null;
+		try {
+			productpageset = productservice.findByshop(shopUuid, pageIndex,
+					pageSize);
+		} catch (Exception e) {
+			res.setStatus(505);
+			e.printStackTrace();
+			return null;
+		}
+
+		/*
+		 * 封装 Pageset
+		 */
+
+		List<Product> productlist = productpageset.getList();
+		JSONArray jasonarray = new JSONArray();
+
+		for (int i = 0; i < productlist.size(); i++) {
+
+			Product product = productlist.get(i);
+			/**
+			 * 在将每个对象转为json对象的时候用setExcludes函数将级联的属性去除掉
+			 */
+			JSONObject returnobject = JSONObject.fromObject(product,
+					JSONConfig.prodConfig());
+
+			/**
+			 * 商品图片
+			 */
+
+			JSONArray picarray = new JSONArray();
+			if (product.getPictureRelates() != null) {
+				for (PictureRelate pr : product.getPictureRelates()) {
+					Pictures pic = new Pictures(pr.getPictures());
+
+					JSONObject picobject = JSONObject.fromObject(pic,
+							JSONConfig.pictureConfig());
+					picarray.add(picobject);
+				}
+			}
+			returnobject.put("picarray", picarray);
+
+			jasonarray.add(returnobject);
+		}
+
+		/**
+		 * 在将每个对象转为json对象的时候用setExcludes函数将级联的属性去除掉
+		 */
+		JSONObject jsonobject = JSONObject.fromObject(productpageset,
+				JSONConfig.pageSetConfig());
+		/**
+		 * 封装 两个 json
+		 */
+		JSONObject returnjson = new JSONObject();
+		returnjson.put("prodlist", jasonarray);
+		returnjson.put("pageSet", jsonobject);
+
+		return jasonarray;
+	}
+
+	/**
+	 * 查询 商品详情
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findProductDetail", method = RequestMethod.POST, consumes = "application/json")
+	public JSONObject findProductDetail(@RequestBody JSONObject json,
+			HttpServletResponse res) throws Exception {
+		String prodUuid = json.getString("prodUuid");
+		int cust_id = json.getInt("custId");
+		Product product = productservice.findProductDetail(prodUuid);
+		JSONObject returnobject = JSONObject.fromObject(product,
+				JSONConfig.prodConfig());
+
+		/**
+		 * 商品图片
+		 */
+
+		JSONArray picarray = new JSONArray();
+		if (product.getPictureRelates() != null) {
+			for (PictureRelate pr : product.getPictureRelates()) {
+				Pictures pic = new Pictures(pr.getPictures());
+
+				JSONObject picobject = JSONObject.fromObject(pic,
+						JSONConfig.pictureConfig());
+				picarray.add(picobject);
+			}
+		}
+		returnobject.put("picarray", picarray);
+		
+		// 商品促销信息
+		returnobject.put("promPrice", product.getPromotion().getPromPrice());
+		returnobject.put("IsPromotion", productservice.isPromotion(product));
+		
+		// 商品是否收藏
+		returnobject.put("IsFollowed",productservice.getFollowed(product.getProdId(), cust_id));
+		return returnobject;
+	}
+
+	/**
+	 * 获取热门商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPopularProduct", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getPopularProduct(@RequestBody JSONObject json,
+			HttpServletResponse res) {
+
+		int pageSize = json.getInt("pageSize");
+
+		String pageIndex = json.getString("pageIndex");
+
+		PageSet<Product> prodPageSet = productservice.getPopularProduct(
+				pageSize, pageIndex);
+
+		List<Product> productlist = prodPageSet.getList();
+		JSONArray jsonarray = new JSONArray();
+		for (int i = 0; i < productlist.size(); i++) {
+			Product product = productlist.get(i);
+			
+			JSONObject jsonproduct = JSONObject.fromObject(product,
+					JSONConfig.prodConfig());
+			/**
+			 * 商品图片
+			 */
+
+			JSONArray picarray = new JSONArray();
+			if (product.getPictureRelates() != null) {
+				for (PictureRelate pr : product.getPictureRelates()) {
+					Pictures pic = new Pictures(pr.getPictures());
+
+					JSONObject picobject = JSONObject.fromObject(pic,
+							JSONConfig.pictureConfig());
+					picarray.add(picobject);
+				}
+			}
+			jsonproduct.put("picarray", picarray);
+			jsonarray.add(jsonproduct);
+		}
+
+		JSONObject pagejson = JSONObject.fromObject(prodPageSet,
+				JSONConfig.pageSetConfig());
+
+		JSONObject returnobject = new JSONObject();
+
+		returnobject.put("pageSet", pagejson);
+		returnobject.put("productlist", jsonarray);
+
+		return jsonarray;
+	}
+
+	/**
+	 * 获取新品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getNewProduct", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getNewProduct(@RequestBody JSONObject json,
+			HttpServletResponse res) {
+
+		int pageSize = json.getInt("pageSize");
+
+		String pageIndex = json.getString("pageIndex");
+
+		PageSet<Product> prodPageSet = productservice.getNewProduct(pageSize,
+				pageIndex);
+
+		List<Product> productlist = prodPageSet.getList();
+		JSONArray jsonarray = new JSONArray();
+		for (int i = 0; i < productlist.size(); i++) {
+			
+			Product product = productlist.get(i);
+			JSONObject jsonproduct = JSONObject.fromObject(product,
+					JSONConfig.prodConfig());
+			
+			/**
+			 * 商品图片
+			 */
+
+			JSONArray picarray = new JSONArray();
+			if (product.getPictureRelates() != null) {
+				for (PictureRelate pr : product.getPictureRelates()) {
+					Pictures pic = new Pictures(pr.getPictures());
+
+					JSONObject picobject = JSONObject.fromObject(pic,
+							JSONConfig.pictureConfig());
+					picarray.add(picobject);
+				}
+			}
+			jsonproduct.put("picarray", picarray);
+			jsonarray.add(jsonproduct);
+		}
+
+		JSONObject pagejson = JSONObject.fromObject(prodPageSet,
+				JSONConfig.pageSetConfig());
+
+		JSONObject returnobject = new JSONObject();
+
+		returnobject.put("pageSet", pagejson);
+		returnobject.put("productlist", jsonarray);
+
+		return jsonarray;
+	}
+
+	/**
+	 * 获取促销商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getPromotionProduct", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray getPromotionProduct(@RequestBody JSONObject json,
+			HttpServletResponse res) {
+
+		int pageSize = json.getInt("pageSize");
+
+		String pageIndex = json.getString("pageIndex");
+
+		List<Product> productlist = productservice.getPromotionProduct(
+				pageSize, pageIndex);
+		JSONArray jsonarray = new JSONArray();
+		for (int i = 0; i < productlist.size(); i++) {
+
+			Product product = productlist.get(i);
+			JSONObject jsonproduct = JSONObject.fromObject(product,
+					JSONConfig.prodConfig());
+
+			/**
+			 * 商品图片
+			 */
+
+			JSONArray picarray = new JSONArray();
+			if (product.getPictureRelates() != null) {
+				for (PictureRelate pr : product.getPictureRelates()) {
+					Pictures pic = new Pictures(pr.getPictures());
+
+					JSONObject picobject = JSONObject.fromObject(pic,
+							JSONConfig.pictureConfig());
+					picarray.add(picobject);
+				}
+			}
+			jsonproduct.put("picarray", picarray);
+			jsonarray.add(jsonproduct);
+		}
+		return jsonarray;
+	}
+	
+	/**
+	 * 获取某商品关注情况
+	 * 
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getFollowed", method = RequestMethod.POST, consumes = "application/json")
+	public void getFollowed(@RequestBody JSONObject json,
+			HttpServletResponse response) throws Exception {
+		int prod_id = json.getInt("prodId");
+		int cust_id = json.getInt("custId");
+		int state = productservice.getFollowed(prod_id, cust_id);
+		response.setStatus(state);
+	}
+}

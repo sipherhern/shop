@@ -1,0 +1,87 @@
+package com.shop.service.impl;
+
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Address;
+import com.shop.entity.Customer;
+import com.shop.entity.Order;
+import com.shop.entity.OrderRelate;
+import com.shop.entity.SkuProd;
+import com.shop.service.OrderService;
+import com.shop.util.UUIdutil;
+@Component
+public class OrderServiceImpl extends BaseServiceImpl implements OrderService{
+
+	@Override
+	public List<?> createByCartitem(int shop_id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSONObject createDirectly(int prodId, int prodAmount, int addressId,
+			Customer customer, int skuId) {
+		// TODO Auto-generated method stub
+		Session session = this.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		Order order = new Order();//创建新订单对象
+		String Uuid = UUIdutil.uuid();
+		order.setOrderUuid(Uuid);
+		order.setAddressId(addressId);
+		this.save(order);
+		SkuProd sp = (SkuProd) this.get(SkuProd.class, skuId);//获取SkuPro
+		OrderRelate re = new OrderRelate();
+		re.setOrder(order);
+		re.setSkuProd(sp);
+		re.setProdAmount(prodAmount);
+		this.save(re);//最终生成OrderRelate(单个信息)
+		tx.commit();
+		JSONObject obj = new JSONObject();
+		obj.put("orderId", order.getId());
+		obj.put("orderUuid", order.getOrderUuid());
+		obj.put("orderDate", order.getOrderTime());
+		return obj;
+	}
+
+	@Override
+	public boolean ConfirmOrder(JSONObject obj) {
+		// TODO Auto-generated method stub
+		Session session = this.openSession();
+		Transaction tx = session.beginTransaction();
+		try
+		{
+			int orderId = obj.getInt("orderId");//订单Id
+			Order order = (Order) this.get(Order.class, orderId);
+			if(obj.containsKey("orderChanel")==false||obj.containsKey("orderPaytype")==false||obj.containsKey("addressId")==false)
+			{
+				tx.rollback();
+				return false;
+			}
+			String orderChanel = obj.getString("orderChanel");
+			String orderPaytype = obj.getString("orderPaytype");
+			int addressId = obj.getInt("addressId");
+			Address address = (Address) this.get(Address.class,addressId);
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			tx.rollback();
+		}
+		finally
+		{
+			session.clear();
+			session.close();
+		}
+		return true;
+	}
+
+
+	
+}

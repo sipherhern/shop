@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-6 13:17:48 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Address" table="address" catalog="shop">
+        <id name="addressId" type="java.lang.Integer">
+            <column name="address_id" />
+            <generator class="identity" />
+        </id>
+        <property name="addressUuid" type="string">
+            <column name="address_uuid" length="32" not-null="true" />
+        </property>
+        <property name="addressProvince" type="string">
+            <column name="address_province" length="20" not-null="true" />
+        </property>
+        <property name="addressCity" type="string">
+            <column name="address_city" length="20" not-null="true" />
+        </property>
+        <property name="addressZipcode" type="java.lang.Short">
+            <column name="address_zipcode" />
+        </property>
+        <property name="addressName" type="string">
+            <column name="address_name">
+                <comment>&#202;&#213;&#187;&#245;&#200;&#203;&#208;&#213;&#195;&#251;</comment>
+            </column>
+        </property>
+        <property name="addressTele" type="int">
+            <column name="address_tele" not-null="true">
+                <comment>&#181;&#231;&#187;&#176;</comment>
+            </column>
+        </property>
+        <property name="addressDetail" type="string">
+            <column name="address_detail" length="200" not-null="true" />
+        </property>
+        <property name="addressDefaulted" type="boolean">
+            <column name="address_defaulted" not-null="true" />
+        </property>
+        <property name="custId" type="int">
+            <column name="cust_id" not-null="true">
+                <comment>&#191;&#205;&#187;&#167;ID</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

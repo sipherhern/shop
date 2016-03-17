@@ -1,0 +1,141 @@
+package com.shop.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Collect;
+import com.shop.entity.Product;
+import com.shop.entity.Shop;
+import com.shop.service.CollectService;
+
+@SuppressWarnings({ "unchecked", "rawtypes" })
+@Component
+public class CollectServiceImpl extends BaseServiceImpl implements
+		CollectService {
+
+	@Override
+	public int followProduct(Collect collect) throws Exception {
+		Product product = new Product();
+		Map<String, Object> p = new HashMap<String, Object>();
+		// get prodId
+		int prod_id = collect.getProduct().getProdId();
+		int cust_id = collect.getCustId();
+		p.put("prodId", prod_id);
+		p.put("custId", cust_id);
+		// check whether exists the collect record or not
+		try {
+			if (!this
+					.find("from Collect c inner join c.product p where p.prodId = :prodId and c.custId = :custId",
+							p).isEmpty())
+				return 202;
+			else {
+				// add a new collect record
+				p.remove("custId");
+				List list = this.find(
+						"from Product p where p.prodId = :prodId", p);
+				product = (Product) list.get(0);
+				collect.setCollectDate(new Date());
+				collect.setCollectType("product");
+				collect.setProduct(product);
+				this.save(collect);
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public int unfollowProduct(int prod_id, int custId) throws Exception {
+		Collect collect = new Collect();
+		Map<String, Object> product = new HashMap<String, Object>();
+		try {
+			product.put("prodId", prod_id);
+			product.put("custId", custId);
+			List list = this
+					.find("From Collect c inner join c.product s where s.prodId = :prodId and c.custId = :custId",
+							product);
+			// check whether exists the collect record or not
+			if (list.isEmpty()) {
+				return 204;
+			} else {
+				// delete corresponding collect record
+				for (Object object : list) {
+					Object[] obj = (Object[]) object;
+					collect = (Collect) obj[0];
+					this.delete(collect);
+				}
+				return 200;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 404;
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getProdCollectPage(int cust_id)
+			throws Exception {
+		Map<String, Object> cust = new HashMap<String, Object>();
+		cust.put("custId", cust_id);
+		String hql = "HQM:select ps.picUrl as picUrl,prod.prodName as prodName,prod.prodPrice as prodPrice,prod.prodSell as prodSell,prod.prodId as prodId from Collect c inner join c.product prod inner join prod.pictureRelates p inner join p.pictures ps "
+				+ "where c.custId = :custId";
+		try {
+			List<Map<String, Object>> result = this.find(hql, 1, 10, cust);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getShopCollectPage(int cust_id)
+			throws Exception {
+		Map<String, Object> cust = new HashMap<String, Object>();
+		cust.put("custId", cust_id);
+		String hql = "HQM:select ps.picUrl as picUrl,s.shopName as shopName,s.shopFollowers as shopFollowers,s.shopProductNum as shopProductNum,s.shopId as shopId from Collect c inner join c.shop s inner join s.pictureRelates p inner join p.pictures ps "
+				+ "where c.custId = :custId";
+		List<Map<String, Object>> result = this.find(hql, 1, 10, cust);
+		for (int i = 0; i < result.size(); i++) {
+			Map map = (Map) result.get(i);
+			// 先添加map的长度,让下面的iterator的size不会发生变化,从而不会出现ConcurrentModificationException这个错误
+			map.put("lastProd", 0);
+			map.put("lastProm", 0);
+			Iterator iterator = map.keySet().iterator();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
+				Object object = map.get(key);
+				if (key.equals("shopId")) {
+					int shop_id = (int) object;
+					Shop shop = (Shop) this.get(Shop.class, shop_id);
+					map.replace("lastProd",
+							judgmentDate(shop.getShopLastprod()));
+					map.replace("lastProm",
+							judgmentDate(shop.getShopLastprom()));
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean judgmentDate(Date end) throws Exception {
+		Date date = new Date();
+		long dif = date.getTime() - end.getTime();
+		if (dif < 0) {
+			return false;
+		}
+		double result = dif * 1.0 / (1000 * 60 * 60);
+		if (result <= 168) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}

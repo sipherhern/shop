@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-6 13:17:48 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.Promotion" table="promotion" catalog="shop">
+        <id name="promId" type="java.lang.Integer">
+            <column name="prom_id" />
+            <generator class="identity" />
+        </id>
+        <property name="promUuid" type="string">
+            <column name="prom_uuid" length="32" not-null="true">
+                <comment>&#180;&#217;&#207;&#250;UUID</comment>
+            </column>
+        </property>
+        <property name="promType" type="string">
+            <column name="prom_type" length="8" not-null="true">
+                <comment>&#180;&#217;&#207;&#250;&#192;&#224;&#208;&#205;</comment>
+            </column>
+        </property>
+        <property name="promDiscount" type="big_decimal">
+            <column name="prom_discount" precision="2">
+                <comment>&#213;&#219;&#191;&#219;</comment>
+            </column>
+        </property>
+        <property name="promPrice" type="big_decimal">
+            <column name="prom_price" precision="7">
+                <comment>&#204;&#216;&#188;&#219;</comment>
+            </column>
+        </property>
+        <property name="promStartDate" type="timestamp">
+            <column name="prom_start_date" length="19">
+                <comment>&#180;&#217;&#207;&#250;&#191;&#170;&#202;&#188;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="promDate" type="timestamp">
+            <column name="prom_date" length="19" not-null="true" />
+        </property>
+        <property name="promEndDate" type="timestamp">
+            <column name="prom_end_date" length="19">
+                <comment>&#180;&#217;&#207;&#250;&#189;&#225;&#202;&#248;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="promEnabled" type="boolean">
+            <column name="prom_enabled" not-null="true">
+                <comment>&#202;&#199;&#183;&#241;&#178;&#201;&#211;&#195;</comment>
+            </column>
+        </property>
+        <property name="promDesc" type="string">
+            <column name="prom_desc" not-null="true">
+                <comment>&#180;&#217;&#207;&#250;&#195;&#232;&#202;&#246;</comment>
+            </column>
+        </property>
+        <property name="promLimitNum" type="java.lang.Integer">
+            <column name="prom_limit_num">
+                <comment>&#207;&#222;&#185;&#186;&#201;&#204;&#198;&#183;&#202;&#253;&#193;&#191;</comment>
+            </column>
+        </property>
+        <property name="promFlashSale" type="boolean">
+            <column name="prom_flashSale" not-null="true">
+                <comment>&#202;&#199;&#183;&#241;&#206;&#170;&#207;&#222;&#202;&#177;&#199;&#192;&#185;&#186;</comment>
+            </column>
+        </property>
+        <set name="products" table="product" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="prom_id">
+                    <comment>&#180;&#217;&#207;&#250;&#192;&#224;&#208;&#205;</comment>
+                </column>
+            </key>
+            <one-to-many class="com.shop.entity.Product" />
+        </set>
+    </class>
+</hibernate-mapping>

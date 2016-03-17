@@ -1,0 +1,131 @@
+package com.shop.service.impl;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Product;
+import com.shop.entity.Shipping;
+import com.shop.entity.vo.ShipForm;
+import com.shop.service.ShippingService;
+import com.shop.util.UUIdutil;
+
+@Component
+public class ShippingServiceImpl extends BaseServiceImpl implements
+		ShippingService {
+
+	@Override
+	public void addShipping(ShipForm shipform) {
+		Transaction tx = null;
+		Session session = null;
+		List<Shipping> shipList = shipform.getShipping();
+		String Uuid = UUIdutil.uuid();
+		session = this.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		for (int i = 0; i < shipList.size(); i++) {
+			Shipping ship = shipList.get(i);
+			ship.setShipUuid(Uuid);
+			session.save(ship);
+		}
+		tx.commit();
+		session.close();
+
+	}
+
+	@Override
+	public List<Object> listAllShippingByPage(int pageSize,int pageIndex) {
+		List<Object>shipList = this.find("SQL:Select group_concat(ship_name),"
+				+ "group_concat(ship_firstunit),"
+				+ "group_concat(ship_firstprice),"
+				+ "group_concat(ship_continueunit),"
+				+ "group_concat(ship_contiuneprice),"
+				+ "group_concat(ship_relate_date),"
+				+ "From shipping where ship_status = 1 group by ship_uuid",pageIndex,pageSize, null);
+		return shipList;
+		
+	}
+
+
+	@Override
+	public void deleteShipping(String uuid) {
+		List<Shipping>shipList = this.listOneShipping(uuid);
+		for(Shipping list: shipList)
+		{
+			this.delete(list);
+		}
+	}
+
+
+	@Override
+	public void updateShipping(ShipForm shipform) {
+		for(Shipping list: shipform.getShipping())
+			this.saveOrUpdate(list);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Shipping> listOneShipping(String uuid) {
+		Map<String, Object> params =new HashMap<String, Object>();
+		params.put("uuid", uuid);
+		List<?> shipList = this.find("From Shipping where ship_uuid = :uuid and ship_status = 1", params);
+		return (List<Shipping>) shipList;
+	}
+
+	@Override
+	public BigDecimal getProductShipping(int prod_id) {
+		// TODO Auto-generated method stub
+		Product product = (Product) this.get(Product.class,prod_id);
+		return product.getProdShipping();
+	}
+
+	@Override
+	public BigDecimal getOrderShipping(int order_id) {
+		// TODO Auto-generated method stub
+		Map <String,Object>map = new HashMap();
+		map.put("order_id", order_id);
+		System.out.println(1);
+		List list = this.find("Select re.skuProd.product.prodWeight,re.skuProd.product.shop.shopAddr,sp,re.prodAmount "
+				+ "From OrderRelate re, Shipping sp "
+				+ "where re.skuProd.product.shipUuid = sp.shipUuid "
+				+ "and re.order.id = :order_id",map);
+		BigDecimal sum = new BigDecimal(0.00);
+		//shopAddr形式:河南-驻马店-许官屯小卖铺
+		//shipAddr形式:河南/河北/山西等
+		for(int index=0; index<list.size(); index++)
+		{
+			Object[] obj = (Object[]) list.get(index);
+			BigDecimal weight = (BigDecimal) obj[0];
+			String shopAddr = (String) obj[1];
+			Shipping shipTemplate = (Shipping)obj[2];
+			int amount = (Integer)obj[3];
+			String shipAddr = shipTemplate.getShipRegion();
+			BigDecimal Firstunit = shipTemplate.getShipFirstunit();
+			BigDecimal Firstprice = shipTemplate.getShipFirstprice();
+			BigDecimal Continueunit = shipTemplate.getShipContinueunit();
+			BigDecimal Contiuneprice = shipTemplate.getShipContiuneprice();
+			int strIndex = shopAddr.indexOf("-");
+			if(shipAddr.contains(shopAddr.subSequence(0, strIndex))==true)
+				{
+					BigDecimal total = weight.multiply(new BigDecimal(amount));
+					if(total.compareTo(Firstunit)== 1)//商品大于首重
+					{
+						BigDecimal fee = new BigDecimal(0.00);
+						fee = (total.subtract(Firstunit)).multiply(Contiuneprice);
+						sum = sum.add(Firstprice).add(fee);
+					}
+					else
+						sum = sum.add(Firstprice);		
+				}
+			
+		}
+		System.out.println(sum);
+		return sum;
+	}
+
+}

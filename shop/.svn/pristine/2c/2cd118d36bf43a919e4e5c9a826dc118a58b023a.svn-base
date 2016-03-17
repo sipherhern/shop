@@ -1,0 +1,178 @@
+package com.shop.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.stereotype.Component;
+
+import com.shop.entity.Collect;
+import com.shop.entity.Customer;
+import com.shop.entity.Shop;
+import com.shop.service.ShopService;
+
+@Component
+public class ShopServiceImpl extends BaseServiceImpl implements
+		ShopService {
+
+	@Override
+	public Shop SysLoginShop(Customer customer) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("custId", customer.getCustId());
+		List<?> resultSet = this.find(
+				"From Shop s inner join s.customer c on c.custId = :custId",
+				param);
+
+		if (resultSet.isEmpty() == false) {
+			Object[] obj = (Object[]) resultSet.get(0);
+			Shop resShop = (Shop) obj[0];
+			return resShop;
+
+		}
+		return null;
+	}
+
+	@Override
+	public void SysLogout() {
+		// TODO Auto-generated method stub
+		this.getCurrentSession().clear();
+		this.getCurrentSession().close();
+	}
+
+	@Override
+	public void SysUpdateShop(Shop shop) {
+		this.update(shop);
+	}
+
+	@Override
+	public void SysSetShopeEnabled(Shop shop) {
+		this.update(shop);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String,Object>> UserlistPopularShop() {
+		// 按照关注量查询前十
+		List<Map<String,Object>> result = this.find("SQM:select s.shop_id as shopId,"
+				+ "s.shop_name as shopName,p.pic_url as picUrl "
+				+ "from shop as s left join "
+				+ "picture_relate as pr inner join pictures as p on p.pic_id = pr.pic_id "
+				+ "on s.shop_id = pr.shop_id where s.shop_enabled = 1 "
+				+ "order by s.shop_followers desc",1,10,null);
+		return result;
+	
+	}
+
+	@Override
+	public List<Map<String,Object>> searchCertainShop(String keywords) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("keywords", "%"+keywords+"%");
+		List<Map<String,Object>> shopResult = this.find("HQM:Select s.shopId, s.shopName From Shop s where s.shopName like :keywords and s.shop_enabled = 1", map);
+		return shopResult;
+	}
+
+	@Override
+	public int getFollowed(int shop_id,int cust_id){
+		Map<String, Object> sh = new HashMap<String, Object>();
+		sh.put("shopId", shop_id);
+		sh.put("custId", cust_id);
+		if (!this
+				.find("from Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId",
+						sh).isEmpty())
+			return 202;
+		else
+			return 200;
+	}
+	
+	@Override
+	public void followCertainShop(int shop_id,int cust_id) {
+		// TODO Auto-generated method stub
+		Session session = this.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		Shop shop = (Shop) session.load(Shop.class, shop_id);
+		shop.setShopFollowers(shop.getShopFollowers()+1);
+		Collect collect = new Collect();
+		collect.setCustId(cust_id);
+		collect.setCollectType("shop");
+		collect.setCollectDate(new Date());
+		collect.setShop(shop);
+		this.save(collect);
+		tx.commit();
+		//1 getCurrentSession创建的session会和绑定到当前线程,而openSession不会。
+		//2 getCurrentSession创建的线程会在事务回滚或事物提交后自动关闭,而openSession必须手动关闭
+		//获取该关注状态，如果已经关注，返回202；
+	/*	
+			return 202;
+			else {*/
+				// add a new collect record
+			
+	}
+
+	@Override
+	public void cancelFollowCertainShop(int shop_id,int cust_id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();	
+		map.put("shop_id", shop_id);
+		Session session = this.getCurrentSession();
+		Transaction tx = session.getTransaction();
+		Shop shop = (Shop) session.load(Shop.class, shop_id);
+		shop.setShopFollowers(shop.getShopFollowers()-1);
+		Collect collect = new Collect();
+		Map<String, Object> sh = new HashMap<String, Object>();
+		sh.put("shopId", shop_id);
+		sh.put("custId", cust_id);
+		List list = this
+				.find("From Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId",
+						sh);
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			collect = (Collect) obj[0];
+			this.delete(collect);
+		}
+		tx.commit();
+		//1 getCurrentSession创建的session会和绑定到当前线程,而openSession不会。
+		//2 getCurrentSession创建的线程会在事务回滚或事物提交后自动关闭,而openSession必须手动关闭
+	}
+
+	@Override
+	public Shop getShopInfo(int shop_id) {
+		// TODO Auto-generated method stub
+		Shop shop = (Shop) this.get(Shop.class, shop_id);
+		return shop;
+	}
+
+	@Override
+	public List getShopPic(int shop_id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("shop_id", shop_id);
+		List<?> result = this.find("SQL:select p.pic_url as picUrl "
+				+ "from pictures as p inner join picture_relate as pr on p.pic_id = pr.pic_id "
+				+ "inner join shop as s on pr.shop_id = s.shop_id "
+				+ "where s.shop_id = :shop_id", params);	
+		//from Collect c inner join c.shop s where s.shopId = :shopId and c.custId = :custId
+		return result;
+	}
+	public JSONObject getShopTag(int shop_id){
+		JSONObject json = new JSONObject();
+		Date date = new Date();
+		Shop shop = (Shop) this.get(Shop.class,shop_id);
+		if(shop.getShopLastprod().after(date)==true)
+			json.put("promotion", true);
+		else
+			json.put("promotion", false);
+		if(shop.getShopLastprod().after(date)==true)
+			json.put("newproduct", true);
+		else
+			json.put("newproduct", false);
+		return json;
+	}
+
+	
+
+}

@@ -1,0 +1,251 @@
+<%@ page language="java" import="java.util.*"
+	contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="layout.tld" prefix="e"%>
+
+<e:override name="title">股东汇 | 管理平台</e:override>
+<e:override name="more_style">
+	<style>
+.search_class {
+	height: 350px;
+}
+</style>
+</e:override>
+
+<e:override name="content_right">
+	<!-- start: Content -->
+
+
+	<ul class="breadcrumb">
+		<li><i class="icon-home"></i> <a href="index.html">Home</a> <i
+			class="icon-angle-right"></i></li>
+		<li><a href="#">Publish</a></li>
+	</ul>
+	<div class="box-header">
+		<h2>
+			<i class="halflings-icon align-justify"></i><span class="break"></span><strong>第一步     </strong>选择商品分类
+		</h2>
+	</div>
+	<div class="row-fluid">
+		<div class="box span4">
+			<div class="search_class">
+				<div class="box-content">
+					<div class="control-group">
+						<label class="control-label" for="selectError1">商品分类1</label>
+						<div class="controls">
+							<select data-placeholder="Your Favorite Product"
+								id="selectError1" data-rel="chosen">
+								<option value=""></option>
+								<optgroup label="NFC EAST">
+									<option>Dallas Cowboys</option>
+									<option>New York Giants</option>
+									<option>Philadelphia Eagles</option>
+									<option>Washington Redskins</option>
+								</optgroup>
+								<optgroup label="NFC NORTH">
+									<option>Chicago Bears</option>
+									<option>Detroit Lions</option>
+									<option>Green Bay Packers</option>
+									<option>Minnesota Vikings</option>
+								</optgroup>
+								<optgroup label="NFC SOUTH">
+									<option>Atlanta Falcons</option>
+									<option>Carolina Panthers</option>
+									<option>New Orleans Saints</option>
+									<option>Tampa Bay Buccaneers</option>
+								</optgroup>
+								<optgroup label="NFC WEST">
+									<option>Arizona Cardinals</option>
+									<option>St. Louis Rams</option>
+									<option>San Francisco 49ers</option>
+									<option>Seattle Seahawks</option>
+								</optgroup>
+								<optgroup label="AFC EAST">
+									<option>Buffalo Dennis Jis</option>
+									<option>Miami Dolphins</option>
+									<option>New England Patriots</option>
+									<option>New York Jets</option>
+								</optgroup>
+								<optgroup label="AFC NORTH">
+									<option>Baltimore Ravens</option>
+									<option>Cincinnati Bengals</option>
+									<option>Cleveland Browns</option>
+									<option>Pittsburgh Steelers</option>
+								</optgroup>
+								<optgroup label="AFC SOUTH">
+									<option>Houston Texans</option>
+									<option>Indianapolis Colts</option>
+									<option>Jacksonville Jaguars</option>
+									<option>Tennessee Titans</option>
+								</optgroup>
+								<optgroup label="AFC WEST">
+									<option>Denver Broncos</option>
+									<option>Kansas City Chiefs</option>
+									<option>Oakland Raiders</option>
+									<option>San Diego Chargers</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/span-->
+
+		<div class="box span4">
+			<div class="search_class">
+				<div class="box-content">
+					<div class="control-group">
+						<label class="control-label" for="selectError2">商品分类2</label>
+						<div class="controls">
+							<select data-placeholder="Your Favorite Product"
+								id="selectError2" data-rel="chosen">
+								<option value=""></option>
+								<optgroup label="NFC EAST">
+									<option>Dallas Cowboys</option>
+									<option>New York Giants</option>
+									<option>Philadelphia Eagles</option>
+									<option>Washington Redskins</option>
+								</optgroup>
+								<optgroup label="NFC NORTH">
+									<option>Chicago Bears</option>
+									<option>Detroit Lions</option>
+									<option>Green Bay Packers</option>
+									<option>Minnesota Vikings</option>
+								</optgroup>
+								<optgroup label="NFC SOUTH">
+									<option>Atlanta Falcons</option>
+									<option>Carolina Panthers</option>
+									<option>New Orleans Saints</option>
+									<option>Tampa Bay Buccaneers</option>
+								</optgroup>
+								<optgroup label="NFC WEST">
+									<option>Arizona Cardinals</option>
+									<option>St. Louis Rams</option>
+									<option>San Francisco 49ers</option>
+									<option>Seattle Seahawks</option>
+								</optgroup>
+								<optgroup label="AFC EAST">
+									<option>Buffalo Dennis Jis</option>
+									<option>Miami Dolphins</option>
+									<option>New England Patriots</option>
+									<option>New York Jets</option>
+								</optgroup>
+								<optgroup label="AFC NORTH">
+									<option>Baltimore Ravens</option>
+									<option>Cincinnati Bengals</option>
+									<option>Cleveland Browns</option>
+									<option>Pittsburgh Steelers</option>
+								</optgroup>
+								<optgroup label="AFC SOUTH">
+									<option>Houston Texans</option>
+									<option>Indianapolis Colts</option>
+									<option>Jacksonville Jaguars</option>
+									<option>Tennessee Titans</option>
+								</optgroup>
+								<optgroup label="AFC WEST">
+									<option>Denver Broncos</option>
+									<option>Kansas City Chiefs</option>
+									<option>Oakland Raiders</option>
+									<option>San Diego Chargers</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/span-->
+
+
+		<div class="box span4">
+			<div class="search_class">
+				<div class="box-content">
+					<div class="control-group">
+						<label class="control-label" for="selectError3">商品分类3</label>
+						<div class="controls">
+							<select data-placeholder="Your Favorite Product"
+								id="selectError3" data-rel="chosen">
+								<option value=""></option>
+								<optgroup label="NFC EAST">
+									<option>Dallas Cowboys</option>
+									<option>New York Giants</option>
+									<option>Philadelphia Eagles</option>
+									<option>Washington Redskins</option>
+								</optgroup>
+								<optgroup label="NFC NORTH">
+									<option>Chicago Bears</option>
+									<option>Detroit Lions</option>
+									<option>Green Bay Packers</option>
+									<option>Minnesota Vikings</option>
+								</optgroup>
+								<optgroup label="NFC SOUTH">
+									<option>Atlanta Falcons</option>
+									<option>Carolina Panthers</option>
+									<option>New Orleans Saints</option>
+									<option>Tampa Bay Buccaneers</option>
+								</optgroup>
+								<optgroup label="NFC WEST">
+									<option>Arizona Cardinals</option>
+									<option>St. Louis Rams</option>
+									<option>San Francisco 49ers</option>
+									<option>Seattle Seahawks</option>
+								</optgroup>
+								<optgroup label="AFC EAST">
+									<option>Buffalo Dennis Jis</option>
+									<option>Miami Dolphins</option>
+									<option>New England Patriots</option>
+									<option>New York Jets</option>
+								</optgroup>
+								<optgroup label="AFC NORTH">
+									<option>Baltimore Ravens</option>
+									<option>Cincinnati Bengals</option>
+									<option>Cleveland Browns</option>
+									<option>Pittsburgh Steelers</option>
+								</optgroup>
+								<optgroup label="AFC SOUTH">
+									<option>Houston Texans</option>
+									<option>Indianapolis Colts</option>
+									<option>Jacksonville Jaguars</option>
+									<option>Tennessee Titans</option>
+								</optgroup>
+								<optgroup label="AFC WEST">
+									<option>Denver Broncos</option>
+									<option>Kansas City Chiefs</option>
+									<option>Oakland Raiders</option>
+									<option>San Diego Chargers</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/span-->
+	</div>
+	<!--/row-->
+
+
+
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="box-content">
+
+
+				<form action='<c:url value="/merchant/product/publish2.jsp"/>' method="get">
+				<div class="control-group">
+					<label class="control-label"></label>
+					<div class="span9">
+						<button type="submit" class="btn btn-primary btn-lg">下一步</button>
+					</div>
+				</div><br>
+				</form>
+			</div>
+		</div>
+		<!--/span-->
+	</div>
+	<!--/row-->
+	<!--/.fluid-container-->
+</e:override>
+
+<%@include file="/merchant/main.jsp"%>

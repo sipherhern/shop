@@ -1,0 +1,102 @@
+package com.shop.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.shop.entity.Category;
+import com.shop.entity.FirstClass;
+import com.shop.entity.Product;
+import com.shop.entity.SecondClass;
+import com.shop.entity.SkuProd;
+import com.shop.entity.ThirdClass;
+import com.shop.entity.vo.ReturnProduct;
+
+
+
+public  interface CategoryService {
+
+	/**
+	 * 测试
+	 * @param test
+	 */
+	public void test(String test);
+	
+	/*************************************  PC  ********************************************/
+
+	/**
+	 *  添加商品分类
+	 * @param cates
+	 * @param shopUuid
+	 * @param lists
+	 * @param skuprods 
+	 * @param product 
+	 */
+	public ReturnProduct addcate(List<Category> cates, String shopUuid,
+			List<List<String>> lists, List<SkuProd> skuprods, Product product);
+	
+	/**
+	 * 全局  查找  子分类
+	 * @return
+	 */
+	public List<FirstClass> findsku1Bycate();
+
+	/**
+	 * 全局  查找  子分类
+	 * @param kindId
+	 * @return
+	 */
+	public List<Category> findcateChildren(String kindId);
+
+	/**
+	 * 全局  根据  cate3  查找  sku1 分类   
+	 * @param kindId
+	 * @return
+	 */
+	public List<Category> findsku1Bycate(String kindId);
+	
+	
+	
+	/*************************************  UI  ********************************************/
+
+	/**
+	 * 查找当前店铺的所有分类
+	 * @param shopUuid
+	 * @return
+	 */
+	public List<Category> findCateByShop(String shopUuid);
+
+	/**
+	 * 查找 商品的 所有sku  属性
+	 * @param prodUuid
+	 * @return
+	 */
+	public List<Map<String, List<String>>> findSKUByProd(String prodUuid);
+
+	/**
+	 * 根据商品sku  获取  价格 数量
+	 * @param prodUuid
+	 * @param skuName
+	 * @return
+	 */
+	public SkuProd findSkuProdBysku(String prodUuid, String skuName);
+
+	
+	/**
+	 * 
+	 * @param 一级菜单ID
+	 * @return
+	 */
+	public List<SecondClass> findsku2Bycate(Integer cate1Id);
+
+	/**
+	 * 
+	 * @param 二级菜单ID
+	 * @return
+	 */
+	public List<ThirdClass> findsku3Bycate(Integer cate2Id);
+
+	
+
+
+
+}

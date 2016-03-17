@@ -1,0 +1,160 @@
+package com.shop.controller.user;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.Shop;
+import com.shop.service.CustomerService;
+import com.shop.service.ShopService;
+import com.shop.util.JacksonUtil;
+import com.shop.util.JsonUtil;
+
+@Component
+@RequestMapping(value = "/shopuser/shop")
+public class ShopController extends RequestContext{
+	@Autowired
+	private CustomerService customerService;
+	@Autowired
+	private ShopService shopService;
+	/**
+	 * 查看热门公司
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
+	 * @throws IOException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "ListPopularShop", method = RequestMethod.POST,consumes = "application/json")
+	public JSONArray listPopularShop(HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException  {
+		List<Map<String,Object>> result = shopService.UserlistPopularShop();
+		if(result.size()==0)
+		{
+			response.setStatus(204);
+			return null;
+		}
+		JacksonUtil jacksonutil = new JacksonUtil();
+		jacksonutil.setNullValueFitter();
+		String resultString = jacksonutil.getMapper().writeValueAsString(result);
+		JSONArray ja = JSONArray.fromObject(resultString);
+		return ja;
+
+	}
+	
+	/**
+	 * 搜索指定的公司
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
+	 * @throws IOException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "SearchCertainShop", method = RequestMethod.POST,consumes = "application/json")
+	public JSONArray searchCertainShop(@RequestBody JSONObject json,
+			HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException  {
+		String keywords = json.getString("keywords");
+		List<Map<String,Object>> result = shopService.searchCertainShop(keywords);
+		if(result.size()==0)
+		{
+			response.setStatus(204);
+			return null;
+		}
+		JacksonUtil jacksonutil = new JacksonUtil();
+		jacksonutil.setNullValueFitter();
+		String resultString = jacksonutil.getMapper().writeValueAsString(result);
+		JSONArray ja = JSONArray.fromObject(resultString);
+		return ja;
+	}
+	
+	/**
+	 * 获取某公司关注情况
+	 */
+	@ResponseBody
+	@RequestMapping(value = "GetFollowed", method = RequestMethod.POST,consumes = "application/json")
+	public void getFollowed(@RequestBody JSONObject json,HttpServletResponse response) {
+		int shop_id = json.getInt("shop_id");
+		int cust_id = this.getPersistCustomer().getCustId();
+		int state = shopService.getFollowed(shop_id,cust_id);
+		response.setStatus(state);
+	}
+	
+	/**
+	 * 关注指定的公司
+	 */
+	@ResponseBody
+	@RequestMapping(value = "FollowCertainShop", method = RequestMethod.POST,consumes = "application/json")
+	public void followCertainShop(@RequestBody JSONObject json ) {
+		int shop_id = json.getInt("shop_id");
+		int cust_id = this.getPersistCustomer().getCustId();
+		shopService.followCertainShop(shop_id,cust_id);
+	}
+	/**
+	 * 取消关注指定的公司 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "CancelFollowCertainShop", method = RequestMethod.POST,consumes = "application/json")
+	public void cancelFollowCertainShop(@RequestBody JSONObject json ){
+		int shop_id = json.getInt("shop_id");
+		int cust_id = this.getPersistCustomer().getCustId();
+		shopService.cancelFollowCertainShop(shop_id,cust_id);
+	}
+	
+	/**
+	 * 获取店铺信息
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "GetShopInfo", method = RequestMethod.POST,consumes = "application/json")
+	public JSONObject getShopInfo(@RequestBody JSONObject json ) throws JsonGenerationException, JsonMappingException, IOException{
+		int shop_id = json.getInt("shop_id");
+		Shop shop = (Shop) shopService.getShopInfo(shop_id);
+		JsonConfig config = new JsonConfig();
+		config.setExcludes(new String[]{"customer","products","pictureRelates","cateRelates","newses","collects"});
+		JSONObject jsonobj = JSONObject.fromObject(shop,config);
+		return jsonobj;
+	}
+	
+	/**
+	 * 获取店铺信息
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "GetShopPic", method = RequestMethod.POST,consumes = "application/json")
+	public JSONArray getShopPic(@RequestBody JSONObject json ) {
+		int shop_id = json.getInt("shop_id");
+		System.out.println(shop_id);
+		List<String> result = shopService.getShopPic(shop_id);
+		return JSONArray.fromObject(result);
+	}
+	
+	/**
+	 * 获取店铺tag
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "GetShopTag", method = RequestMethod.POST,consumes = "application/json")
+	public JSONObject getShopTag(@RequestBody JSONObject json ) {
+		int shop_id = json.getInt("shop_id");
+		return shopService.getShopTag(shop_id);
+	}
+}

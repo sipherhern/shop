@@ -1,0 +1,596 @@
+package com.shop.controller.system;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jgroups.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.Order;
+import com.shop.entity.OrderRelate;
+import com.shop.entity.ProdCommt;
+import com.shop.entity.Product;
+import com.shop.entity.Province;
+import com.shop.entity.Shop;
+import com.shop.entity.SkuProd;
+import com.shop.entity.ThirdClass;
+import com.shop.entity.vo.PageSet;
+import com.shop.entity.vo.ReturnProduct;
+import com.shop.service.ProductService;
+import com.shop.service.SystemProductService;
+import com.shop.util.Script;
+
+@Component
+@RequestMapping(value = "/system/product")
+public class SysProductController extends RequestContext {
+
+	@Autowired
+	private ProductService productservice;
+	@Autowired
+	private SystemProductService systemProductService;
+	private static Integer login=0;
+	private Integer shopId;
+	
+	
+	@ModelAttribute
+	public void checkUser(HttpServletRequest req,HttpServletResponse res,Model model) {  
+		try {
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~`");
+			if(req.getSession().getAttribute("shopId")==null){
+				res.sendRedirect("/shop/merchant/login.jsp");
+				login=0;
+			}
+			else{
+				shopId=(Integer)req.getSession().getAttribute("shopId");
+				login=1;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}  
+	
+	
+	
+	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	public void test() {
+
+		String test = "Sysproduct : test";
+
+		productservice.test(test);
+
+		System.out.println("ddd");
+	}
+	
+	@RequestMapping(value = "/replyComment" )
+	public String replyComment(Integer comment_id,String replyContent)  {
+		String type=systemProductService.replyComment( comment_id, replyContent);
+		if(type.equals("question"))
+			return "redirect:/system/product/getShopConsult";
+		else if(type.equals("comment"))
+		    return "redirect:/system/product/getShopComment";
+		else 
+			return "redirect:/system/product/getShopComplaint";
+	}
+	
+	
+
+	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+	public void addproduct(HttpServletRequest req) {
+        if(login==0) return;
+		ReturnProduct returnproduct = (ReturnProduct) req
+				.getAttribute("returnproduct");
+
+		System.out.println(returnproduct);
+
+		productservice.addproduct(returnproduct);
+
+		String test = "Sysproduct : test  : success";
+
+		System.out.println(test);
+	}
+	
+	
+	@RequestMapping(value = "/saveTemporaryImg")
+	public void saveTemporaryImg(@RequestParam(value = "image", required = false) MultipartFile image, HttpServletRequest request,HttpServletResponse res) {
+		if(login==0) return;
+		String path = request.getSession().getServletContext().getRealPath("../upload");  
+        String fileName =  UUID.randomUUID().toString()+".jpg";  
+//        String fileName = new Date().getTime()+".jpg";  
+        File targetFile = new File(path,fileName);  
+        if(!targetFile.exists()){  
+            targetFile.mkdirs();  
+        }  
+  
+        //保存  
+        try {  
+        	image.transferTo(targetFile);  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        PrintWriter out;
+		try {
+			out = res.getWriter();
+	        out.print("<script>parent.initImg('"+request.getContextPath()+"/../upload/"+fileName+"')</script>");
+	        out.print(Script.scriptParentHideLoading());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	@RequestMapping(value = "/addproductDo", method = RequestMethod.POST)
+	public String addproductDo(@ModelAttribute Product product,String typestring,Integer category,Integer thirdClassId,HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		Integer paramCount=req.getParameterMap().keySet().size();
+		List<String> firstList = new ArrayList<String>();
+		List<String> amountList = new ArrayList<String>();
+		List<String> imgList = new ArrayList<String>();
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("first["+i+"]");
+			if(param!=null){
+				firstList.add(i, param);
+			}
+		}
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("amount"+category+"["+i+"]");
+			if(param!=null){
+				amountList.add(i, param);
+			}
+		}
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("img["+i+"]");
+			if(param!=null){
+				imgList.add(i, param);
+			}
+		}
+		Shop shop = new Shop();
+		shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+		product.setShop(shop);
+		product.setShipUuid("");
+		product.setProdType("isclose");
+		product.setProdShipping(new BigDecimal(0));
+		ThirdClass thirdClass=new ThirdClass();
+		thirdClass.setId(thirdClassId);
+		product.setThirdClass(thirdClass);
+		systemProductService.addproductDo(product,imgList,firstList,amountList,typestring,category);
+		return "redirect:/shopsys/shop/mainPage?alert=1"; 
+	}
+
+	
+	
+	
+	@RequestMapping(value = "/updateproductDo", method = RequestMethod.POST)
+	public String updateproductDo(@ModelAttribute Product product ,Integer thirdClassId,HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		Integer paramCount=req.getParameterMap().keySet().size();
+		List<String> typeIdList = new ArrayList<String>();
+		List<String> amountList = new ArrayList<String>();
+		List<String> imgList = new ArrayList<String>();
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("typeId["+i+"]");
+			if(param!=null){
+				typeIdList.add(i, param);
+			}
+		}
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("amount["+i+"]");
+			if(param!=null){
+				amountList.add(i, param);
+			}
+		}
+		for(int i=0;i<paramCount;i++){
+			String param = req.getParameter("img["+i+"]");
+			if(param!=null){
+				imgList.add(i, param);
+			}
+		}
+		Shop shop = new Shop();
+		shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+		product.setShop(shop);
+		ThirdClass thirdClass=new ThirdClass();
+		thirdClass.setId(thirdClassId);
+		product.setThirdClass(thirdClass);
+		systemProductService.updateProductDo(product,imgList,amountList,typeIdList);
+		return "redirect:/shopsys/shop/mainPage?alert=2"; 
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 获取仓库中 的 商品
+	 * category 0所有    1 售完下架    2 商户下架
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getStorageProduct")
+	public String getStorageProduct(Integer page,Integer category,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		if(page==null)
+			page=1;
+		if(category==null)
+			category=0;
+		
+		Shop shop = new Shop();
+		shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+		List<Product> list= systemProductService.getStorageProduct( shop, page,category );
+		model.addAttribute("productList", list);
+		model.addAttribute("pageCount", systemProductService.getStorageProductCount(shop, category));
+		return "merchant/product/auction_list";
+	}
+	
+	
+ 
+	@RequestMapping(value = "/getTemplateDetail")
+	public String getTemplateDetail( Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		model.addAttribute("provinces", systemProductService.getAllProvince());
+		return "merchant/logis/logis_tools";
+	}
+	
+	
+	@RequestMapping(value = "/getTemplate")
+	public String getTemplate( Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		model.addAttribute("provinces", systemProductService.getAllProvince());
+		return "merchant/logis/template";
+	}
+	
+	
+	/**
+	 * 获取待发货的
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getWaitSendProduct")
+	public String getWaitSendProduct(Integer page,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+		if(page==null)
+			page=1;
+		Shop shop = new Shop();
+		shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+		List<Product> list= systemProductService.getWaitSendProduct( shop, page );
+		model.addAttribute("productList", list);
+		model.addAttribute("pageCount",systemProductService.getWaitSendProductCount( shop ));
+		return "merchant/logis/order_list";
+	}
+
+	
+	
+	
+	/**
+	 * 删除商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/detproduct", method = RequestMethod.POST)
+	public void detproduct(String idArray, HttpServletRequest req, HttpServletResponse res) {
+		if(login==0) return;
+		Integer shopId=(Integer)req.getSession().getAttribute("shopId");
+		systemProductService.detproduct(shopId,idArray);
+		try {
+			PrintWriter out=res.getWriter();
+			out.print("1");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * 上架商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/upproductstate", method = RequestMethod.POST)
+	public void upproductstate(String idArray, HttpServletRequest req, HttpServletResponse res) {
+		if(login==0) return;
+		Integer shopId=(Integer)req.getSession().getAttribute("shopId");
+		systemProductService.upproductstate(shopId,idArray);
+		try {
+			PrintWriter out=res.getWriter();
+			out.print("1");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	/**
+	 * 上架商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/downproductstate", method = RequestMethod.POST)
+	public void downproductstate(String idArray, HttpServletRequest req, HttpServletResponse res) {
+		if(login==0) return;
+		Integer shopId=(Integer)req.getSession().getAttribute("shopId");
+		systemProductService.downproductstate(shopId,idArray);
+		try {
+			PrintWriter out=res.getWriter();
+			out.print("1");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	
+	
+	
+	
+	/**
+	 * 获取出售中 的 商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getSellingProduct")
+	public String getSellingProduct(Integer page,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+			if(page==null)
+				page=1;
+			Shop shop = new Shop();
+			shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+			List<Product> list= systemProductService.getSellingProduct( shop, page );
+			model.addAttribute("productList", list);
+			model.addAttribute("pageCount", systemProductService.getSellingProductCount( shop));
+			return "merchant/product/selling_list";
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 获取已卖出所有商品
+	 * category 0所有   1待付款    2待发货    3待验收    4待评价   5完成
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getSoldProduct")
+	public String getSoldProduct(Integer page,Model model,Integer category, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+			if(page==null)
+				page=1;
+			if(category==null)
+				category=0;
+			Shop shop = new Shop();
+			shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+			List<OrderRelate> list= systemProductService.getSoldProduct( shop, page ,category);
+			model.addAttribute("soldList", list);
+			model.addAttribute("pageCount", systemProductService.getSoldProductCount( shop,category));
+			return "merchant/deal/sold_list";
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 获取所有商铺评论
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getShopComment")
+	public String getShopComment(Integer page,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+			if(page==null)
+				page=1;
+			Shop shop = new Shop();
+			shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+			List<ProdCommt> list= systemProductService.getShopComment( shop, page ,"comment");
+			model.addAttribute("commentList", list);
+			model.addAttribute("pageCount", systemProductService.getShopCommentCount(shop, "comment"));
+			return "merchant/deal/myRate";
+	}
+	
+	
+	
+	
+	/**
+	 * 获取所有商铺咨询
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getShopConsult")
+	public String getShopConsult(Integer page,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+			if(page==null)
+				page=1;
+			Shop shop = new Shop();
+			String type="question";
+			shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+			List<ProdCommt> list= systemProductService.getShopComment( shop, page ,type);
+			model.addAttribute("pageCount", systemProductService.getShopCommentCount(shop, "question"));
+			model.addAttribute("commentList", list);
+			return "merchant/service/shop_consult";
+	}
+	
+	/**
+	 * 获取所有商铺投诉
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getShopComplaint")
+	public String getShopComplaint(Integer page,Model model, HttpServletRequest req,HttpServletResponse res) {
+		if(login==0) return null;
+			if(page==null)
+				page=1;
+			Shop shop = new Shop();
+			String type="complaint";
+			shop.setShopId((Integer)req.getSession().getAttribute("shopId"));
+			List<ProdCommt> list= systemProductService.getShopComment( shop, page ,type);
+			model.addAttribute("commentList", list);
+			model.addAttribute("pageCount", systemProductService.getShopCommentCount(shop, "complaint"));
+			return "merchant/service/shop_complaint";
+	}	
+	
+	
+	/**
+	 * 更改商品 详细信息
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/updateproductdetail", method = RequestMethod.POST)
+	public void updateproductdetail(Product product, HttpServletResponse res) {
+
+		boolean b = productservice.updateproductdetail(product);
+
+	}
+
+	/**
+	 * 更改 商品 sku
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/updateskuprod", method = RequestMethod.POST)
+	public void updateskuprod(Product product, SkuProd skuprod,
+			HttpServletResponse res) {
+
+		boolean b = productservice.updateskuprod(product, skuprod);
+	}
+
+
+
+	/**
+	 * 上下架商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/updateproductstate", method = RequestMethod.POST)
+	public void updateproductstate(Product product, HttpServletResponse res) {
+
+		boolean b = productservice.updateproductstate(product);
+	}
+
+
+
+
+	/**
+	 * 获取审核中 的 商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getcheckingProduct", method = RequestMethod.POST)
+	public String getcheckingProduct(String pageIndex, String shopUuid,
+			int pageSize, HttpServletResponse res) {
+
+		PageSet<Product> prodPageSet = productservice.getcheckingProduct(
+				pageSize, pageIndex, shopUuid);
+
+		return null;
+	}
+
+	/**
+	 * 待发货的商品
+	 * 
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+ 
+	@RequestMapping(value = "/getwaitdeliver", method = RequestMethod.POST)
+	public String getwaitdeliver(String pageIndex, String shopUuid,
+			int pageSize, HttpServletResponse res) {
+
+		PageSet<Order> prodPageSet = productservice.getwaitdeliver(pageSize,
+				pageIndex, shopUuid);
+
+		List<Order> productlist = prodPageSet.getList();
+		return shopUuid;
+	}
+
+	
+	@RequestMapping(value = "/addproductPage")
+	public String addproductPage() {
+           
+		return "merchant/product/publish";
+	}
+	
+	
+	@RequestMapping(value = "/editproductPage")
+	public String editproductPage(Integer prod_id,Model model,HttpServletResponse res) throws IOException {
+		if(login==0) return null;
+		 Product product=systemProductService.geProductById(shopId,prod_id);
+		 if(product==null){
+			 res.sendRedirect("/shop/merchant/login.jsp");
+			 return null;
+		 }
+		 model.addAttribute("product",product);
+		 model.addAttribute("content",product.getProdDesc());
+		return "merchant/product/editProduct";
+	}
+	
+	
+	@RequestMapping(value = "/sendProduct", method = RequestMethod.POST)
+	public String sendProduct(Integer orderId,String logisticName,String logisticId,Model model,HttpServletResponse res) throws IOException {
+		if(login==0) return null;
+		systemProductService.sendProduct( orderId, logisticName, logisticId);
+  		res.sendRedirect("/shop/system/product/getWaitSendProduct");
+		return null;
+	}	
+	
+	
+	
+}

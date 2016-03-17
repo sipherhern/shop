@@ -1,0 +1,168 @@
+package com.shop.controller.user;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.entity.Collect;
+import com.shop.entity.Customer;
+import com.shop.service.CollectService;
+import com.shop.service.ShopService;
+import com.shop.util.JacksonUtil;
+
+@Controller
+@RequestMapping("/shopuser/collect")
+public class CollectController extends RequestContext {
+
+	@Autowired
+	private CollectService collectService;
+
+	@Autowired
+	private ShopService shopService;
+
+	@ResponseBody
+	@RequestMapping(value = "followShop", method = RequestMethod.POST, consumes = "application/json")
+	public void followShop(HttpServletResponse res, @RequestBody JSONObject json)
+			throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Collect collect = new Collect();
+		try {
+			collect = objectMapper.readValue(json.toString(), Collect.class);
+			res.setStatus(collectService.followShop(collect));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "followProduct", method = RequestMethod.POST, consumes = "application/json")
+	public void followProduct(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Collect collect = new Collect();
+		try {
+			collect = objectMapper.readValue(json.toString(), Collect.class);
+			res.setStatus(collectService.followProduct(collect));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "unfollowShop", method = RequestMethod.POST, consumes = "application/json")
+	public void unfollowShop(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		Customer customer = (Customer) this.getPersistCustomer();
+		int cust_id = customer.getCustId();
+		int shop_id = json.getInt("shopId");
+		res.setStatus(collectService.unfollowShop(shop_id, cust_id));
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "unfollowProduct", method = RequestMethod.POST, consumes = "application/json")
+	public void unfollowProduct(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int prod_id = json.getInt("prodId");
+		Customer customer = (Customer) this.getPersistCustomer();
+		int cust_id = customer.getCustId();
+		res.setStatus(collectService.unfollowProduct(prod_id, cust_id));
+	}
+
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value = "findFollProdByPage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray findFollProdByPage(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int cust_id = json.getInt("custId");
+		List<Map<String, Object>> result = collectService
+				.getProdCollectPage(cust_id);
+		if (result.isEmpty()) {
+			res.setStatus(204);
+			return null;
+		}
+		JacksonUtil jacksonutil = new JacksonUtil();
+		jacksonutil.setNullValueFitter();
+		String resultString = jacksonutil.getMapper()
+				.writeValueAsString(result);
+		JSONArray jsonArray = JSONArray.fromObject(resultString);
+		return jsonArray;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value = "findFollShopByPage", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray findFollShopByPage(HttpServletResponse res,
+			@RequestBody JSONObject json) throws Exception {
+		int cust_id = json.getInt("custId");
+		json.remove("custId");
+		List<Map<String, Object>> result = collectService
+				.getShopCollectPage(cust_id);
+		if (result.isEmpty()) {
+			res.setStatus(204);
+			return null;
+		}
+		JacksonUtil jacksonutil = new JacksonUtil();
+		jacksonutil.setNullValueFitter();
+		String resultString = jacksonutil.getMapper()
+				.writeValueAsString(result);
+		JSONArray jsonArray = JSONArray.fromObject(resultString);
+
+		
+		
+		return jsonArray;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getProductFollNum", method = RequestMethod.POST, consumes = "application/json")
+	public JSONObject getProductNum(HttpServletResponse res) throws Exception {
+		JSONObject json = new JSONObject();
+		Customer customer = this.getPersistCustomer();
+		try {
+			if (customer == null) {
+				res.setStatus(203);
+				return null;
+			} else {
+				json.put("prodNum", collectService.getProdFollNum(customer));
+				res.setStatus(200);
+				return json;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getShopFollNum", method = RequestMethod.POST, consumes = "application/json")
+	public JSONObject getShopNum(HttpServletResponse res) throws Exception {
+		JSONObject json = new JSONObject();
+		Customer customer = this.getPersistCustomer();
+		try {
+			if (customer == null) {
+				res.setStatus(203);
+				return null;
+			} else {
+				json.put("shopNum", collectService.getShopFollNum(customer));
+				res.setStatus(200);
+				return json;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+}

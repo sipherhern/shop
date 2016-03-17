@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-11 14:30:31 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.City" table="city" catalog="shop">
+        <id name="city" type="string">
+            <column name="city" length="20" />
+            <generator class="assigned" />
+        </id>
+        <property name="cid" type="int">
+            <column name="cid" not-null="true" />
+        </property>
+        <property name="proid" type="int">
+            <column name="proid" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

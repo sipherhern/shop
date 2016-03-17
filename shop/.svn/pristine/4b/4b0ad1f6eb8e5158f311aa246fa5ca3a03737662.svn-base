@@ -1,0 +1,119 @@
+package com.shop.controller.user;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shop.entity.Category;
+import com.shop.entity.SkuProd;
+import com.shop.service.CategoryService;
+
+@Component
+@RequestMapping(value = "/user/category")
+public class CategoryController {
+
+	@Autowired
+	private CategoryService categoryservice;
+
+	@ResponseBody
+	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	public void test() {
+
+		String test = "test";
+
+		categoryservice.test(test);
+
+		System.out.println("ddd");
+	}
+	
+	/**
+	 * 查找当前店铺的所有分类
+	 * @param json
+	 * @param res
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findcateByshop", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray  findCateByShop(@RequestBody JSONObject json, HttpServletResponse res){
+		
+		String shopUuid = json.getString("shoUuid");
+		
+		List<Category> catelist = categoryservice.findCateByShop(shopUuid);
+		
+		System.out.println(catelist);
+		
+
+		JSONArray jsonarray = new JSONArray();
+		JsonConfig config = new JsonConfig();
+		
+		config.setExcludes(new String[] { "category", "categories","cateRelates","skuProd" });
+		
+		for(int i=0; i< catelist.size(); i++){
+			JSONObject jsonobject = new JSONObject();
+			jsonobject = JSONObject.fromObject(catelist.get(i), config);
+			jsonarray.add(jsonobject);
+		}
+		
+		return jsonarray;
+	}
+
+	/**
+	 * 查找 商品的 所有sku  属性
+	 * @param json
+	 * @param res
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findSKUByProd", method = RequestMethod.POST, consumes = "application/json")
+	public JSONArray  findSKUByProd(@RequestBody JSONObject json, HttpServletResponse res){
+		
+		
+		String prodUuid = json.getString("prodUuid");
+		
+		List<Map<String, List<String>>> skulist = categoryservice.findSKUByProd(prodUuid);
+		
+		JSONArray jsonarray = new JSONArray();
+		for(int i=0; i<skulist.size(); i++){
+			
+			Map<String, List<String>> skumap = skulist.get(i);
+			System.out.println(skumap);
+			JSONObject jsonobject = JSONObject.fromObject(skumap);
+			System.out.println(jsonobject);
+			jsonarray.add(jsonobject);
+		}
+		
+		System.out.println(jsonarray);
+		return jsonarray;
+	}
+	
+	/**
+	 * 根据商品sku  获取  价格 数量
+	 * @param json
+	 * @param res
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findSkuProdBysku", method = RequestMethod.POST, consumes = "application/json")
+	public JSONObject findSkuProdBysku(@RequestBody JSONObject json, HttpServletResponse res){
+		
+		String prodUuid = json.getString("prodUuid");
+		
+		String skuName = json.getString("skuName");
+		
+		SkuProd skuprod = categoryservice.findSkuProdBysku(prodUuid,skuName);
+		
+		JSONObject returnjson = JSONObject.fromObject(skuprod);
+		
+		return returnjson;
+	}
+}

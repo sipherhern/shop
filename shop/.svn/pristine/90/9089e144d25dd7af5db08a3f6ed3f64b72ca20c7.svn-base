@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-9-29 21:11:51 by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="com.shop.entity.ThirdClass" table="third_class" catalog="shop">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="secondClass" class="com.shop.entity.SecondClass" fetch="select">
+            <column name="parent_id" />
+        </many-to-one>
+        <property name="className" type="string">
+            <column name="class_name" length="50" />
+        </property>
+        <set name="shopClasses" table="shop_class" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="three_class" not-null="true" />
+            </key>
+            <one-to-many class="com.shop.entity.ShopClass" />
+        </set>
+        <set name="products" table="product" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="third_class_id" />
+            </key>
+            <one-to-many class="com.shop.entity.Product" />
+        </set>
+    </class>
+</hibernate-mapping>

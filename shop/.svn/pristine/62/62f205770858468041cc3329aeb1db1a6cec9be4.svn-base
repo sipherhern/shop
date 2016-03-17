@@ -1,0 +1,40 @@
+package com.shop.controller.user;
+
+import java.io.IOException;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.shop.controller.base.RequestContext;
+import com.shop.service.OrderService;
+@Component
+@RequestMapping(value = "/shopuser/order")
+public class OrderController extends RequestContext{
+	@Autowired
+	private OrderService orderservice;
+	/**
+	 * 直接下单
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "createDirectly", method = RequestMethod.POST)
+	public void createDirectly(JSONObject obj) throws IOException{
+		String prodUuid = obj.getString("prodUuid");//商品ID
+		String prodAmount = obj.getString("prodAmount");//商品购买数量
+		String customerUuid = obj.getString("customerId");//用户ID
+		String addressUuid = obj.getString("addressUuid");//采用的地址模板
+		String orderPaytype = obj.getString("orderPaytype");//付款类型
+		orderservice.createDirectly(prodUuid,prodAmount,customerUuid,addressUuid,orderPaytype);
+	}
+	/**
+	 * 通过购物车下单
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "createByCartitem", method = RequestMethod.POST)
+	public void createByCartitem(int shop_id) throws IOException{
+		orderservice.createByCartitem(shop_id);
+	}
+}
